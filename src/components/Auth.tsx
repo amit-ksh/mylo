@@ -25,7 +25,7 @@ export default function AuthShowcase() {
       </p>
       {!sessionData ? (
         <Link
-          href="/signin"
+          href="/auth"
           className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         >
           Sign In
