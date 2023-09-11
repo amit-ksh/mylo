@@ -55,6 +55,36 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    app           App[]
+}
+
+model Subscriber {
+    id            String    @id @default(cuid())
+    email         String
+    appId         String
+    user          App     @relation(fields: [appId], references: [id], onDelete: Cascade)
+}
+
+model App {
+    id           String    @id @default(cuid())
+    name         String
+    token        String    @unique
+    userId       String
+    subscriber   Subscriber[]
+    mails        Mail[]
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, name])
+}
+
+model Mail {
+    id           String    @id @default(cuid())  // Mail ID for different languages
+    mailId       String    // Original Mail ID
+    language     String
+    appId        String
+    app          App       @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+    @@unique([mailId, language]) 
 }
 
 model VerificationToken {
