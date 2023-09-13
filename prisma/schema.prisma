@@ -49,6 +49,8 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -60,13 +62,16 @@ model User {
 
 model Subscriber {
     id            String    @id @default(cuid())
+    createdAt     DateTime @default(now())
     email         String
+    language      String
     appId         String
-    user          App     @relation(fields: [appId], references: [id], onDelete: Cascade)
+    app           App     @relation(fields: [appId], references: [id], onDelete: Cascade)
 }
 
 model App {
     id           String    @id @default(cuid())
+    createdAt    DateTime @default(now())
     name         String
     token        String    @unique
     userId       String
@@ -79,6 +84,7 @@ model App {
 
 model Mail {
     id           String    @id @default(cuid())  // Mail ID for different languages
+    createdAt    DateTime @default(now())
     mailId       String    // Original Mail ID
     language     String
     appId        String
