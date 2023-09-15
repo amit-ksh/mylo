@@ -70,14 +70,16 @@ model Subscriber {
 }
 
 model App {
-    id           String    @id @default(cuid())
-    createdAt    DateTime @default(now())
-    name         String
-    token        String    @unique
-    userId       String
-    subscriber   Subscriber[]
-    mails        Mail[]
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id              String    @id @default(cuid())
+    createdAt       DateTime  @default(now())
+    name            String
+    token           String    @unique
+    email           String
+    emailVerified   Boolean   @default(false)
+    userId          String
+    subscriber      Subscriber[]
+    mails           Mail[]
+    user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([userId, name])
 }
