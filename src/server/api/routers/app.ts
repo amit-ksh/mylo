@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { appCreateSchema } from '@/schemas/app';
+import { Draft, nylas } from '@/lib/nylas';
 
 export const appRouter = createTRPCRouter({
   create: publicProcedure
@@ -23,7 +24,22 @@ export const appRouter = createTRPCRouter({
             token,
           },
         })
-        .then(({ id }) => id)
+        .then(({ id }) => {
+          const draft = new Draft(nylas, {
+            subject: 'Verify your app email',
+            body: `Click the following link to verify for email: https://localhost:3000/app/verify/${id}`,
+            to: [{ email: payload.email }],
+          });
+
+          draft
+            .send()
+            .then(message => {
+              console.log(`${message.id} was sent`);
+            })
+            .catch(() => 'Server error! Try agian later.');
+
+          return id;
+        })
         .catch(() => 'Invalid Inputs');
     }),
 

@@ -67,6 +67,8 @@ model Subscriber {
     language      String
     appId         String
     app           App     @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+    @@unique([appId, email])
 }
 
 model App {

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
 import { MainNav } from '@/components/MainNav';
 import AppLogo from '@/components/AppLogo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
 import { CreateAppModal } from '@/components/CreateAppModal';
 
 export const metadata: Metadata = {
