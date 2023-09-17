@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { appCreateSchema } from '@/schemas/app';
 import { Draft, nylas } from '@/lib/nylas';
+import { env } from '@/env.mjs';
+import { prisma } from '@/server/db';
 
 export const appRouter = createTRPCRouter({
   create: publicProcedure
@@ -25,9 +27,10 @@ export const appRouter = createTRPCRouter({
           },
         })
         .then(({ id }) => {
+          const encodedId = jwt.sign(id, env.JWT_SECRET);
           const draft = new Draft(nylas, {
             subject: 'Verify your app email',
-            body: `Click the following link to verify for email: https://localhost:3000/app/verify/${id}`,
+            body: `Click the following link to verify for email: https://localhost:3000/app/verify/${encodedId}`,
             to: [{ email: payload.email }],
           });
           draft
@@ -84,4 +87,24 @@ export const appRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.app.findMany({ where: input });
     }),
+  verify: publicProcedure.input(z.string()).mutation(({ ctx, input }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const id = jwt.decode(input) as string;
+    try {
+      void ctx.prisma.app.update({
+        where: { id },
+        data: {
+          emailVerified: true,
+        },
+      });
+    } catch (error) {
+      return 'Invalid verification link.';
+    }
+
+    return {
+      id,
+    };
+  }),
 });
+
+export const appCaller = appRouter.createCaller({ session: null, prisma });

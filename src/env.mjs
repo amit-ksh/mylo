@@ -28,6 +28,7 @@ export const env = createEnv({
     NYLAS_CLIENT_ID: z.string(),
     NYLAS_CLIENT_SECRET: z.string(),
     NYLAS_ACCESS_TOKEN: z.string(),
+    JWT_SECRET: z.string(),
   },
 
   /**
@@ -55,6 +56,7 @@ export const env = createEnv({
     NYLAS_CLIENT_ID: process.env.NYLAS_CLIENT_ID,
     NYLAS_CLIENT_SECRET: process.env.NYLAS_CLIENT_SECRET,
     NYLAS_ACCESS_TOKEN: process.env.NYLAS_ACCESS_TOKEN,
+    JWT_SECRET: process.env.JWT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
