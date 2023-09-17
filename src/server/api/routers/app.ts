@@ -30,7 +30,6 @@ export const appRouter = createTRPCRouter({
             body: `Click the following link to verify for email: https://localhost:3000/app/verify/${id}`,
             to: [{ email: payload.email }],
           });
-
           draft
             .send()
             .then(message => {
