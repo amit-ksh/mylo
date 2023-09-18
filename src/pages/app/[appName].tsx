@@ -143,7 +143,10 @@ const SettingPanel = () => {
         <TokenField id="token" label="Token" value={token} />
       </CardContent>
       <CardFooter className="flex items-center justify-end">
-        <DangerModal onConfirm={() => console.log('delete app')} />
+        <DangerModal
+          confirmationText={appName}
+          onConfirm={() => console.log('delete app')}
+        />
       </CardFooter>
     </Card>
   );

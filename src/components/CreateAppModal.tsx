@@ -1,16 +1,17 @@
 import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { appCreateSchema } from '@/schemas/app';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from './ui/dialog';
 import {
   Form,
   FormControl,
@@ -20,7 +21,9 @@ import {
   FormLabel,
   FormMessage,
 } from './ui/form';
+
 import { api } from '@/utils/api';
+import { appCreateSchema } from '@/schemas/app';
 
 const formSchema = appCreateSchema.omit({ userId: true });
 
@@ -38,20 +41,18 @@ export function CreateAppModal() {
   }
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button className="flex w-full items-center gap-2">
           <PlusCircledIcon />
           Create App
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80">
+      </DialogTrigger>
+      <DialogContent className="w-80">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="text-center font-medium leading-none">
-              Create New App
-            </h4>
-          </div>
+          <DialogHeader className="space-y-2">
+            <DialogTitle>Create New App</DialogTitle>
+          </DialogHeader>
           <Form {...form}>
             <form
               onSubmit={void form.handleSubmit(onSubmit)}
@@ -96,7 +97,7 @@ export function CreateAppModal() {
             </form>
           </Form>
         </div>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,10 +1,10 @@
 import { Label } from '@radix-ui/react-label';
-import React from 'react';
 import { Input, type InputProps } from './ui/input';
+import type { ReactNode } from 'react';
 
 interface IInputField extends InputProps {
   id: string;
-  label: string;
+  label: ReactNode;
 }
 export default function InputField({ id, label, ...props }: IInputField) {
   return (
