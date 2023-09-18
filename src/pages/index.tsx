@@ -1,12 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
 
-import { Button } from '@/components/ui/button';
-import { MainNav } from '@/components/MainNav';
-import AppLogo from '@/components/AppLogo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreateAppModal } from '@/components/CreateAppModal';
+import MainLayout from '@/components/layouts/MainLayout';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -42,24 +39,12 @@ function AppCard({ name, createdAt, totalSubscribers }: IAppCard) {
 }
 export default function DashboardPage() {
   return (
-    <div className="flex-col md:flex">
-      <div className="border-b">
-        <div className="flex h-16 items-center justify-between px-4">
-          <AppLogo />
-
-          <MainNav className="mx-6" />
-
-          <div className="flex items-center space-x-4">
-            <Button className="" onClick={void signOut}>
-              Log Out
-            </Button>
-          </div>
-        </div>
-      </div>
-
+    <MainLayout>
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-bold">Apps</h2>
-        <CreateAppModal />
+        <div className="max-w-lg">
+          <CreateAppModal />
+        </div>
       </div>
 
       <ul className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -106,6 +91,6 @@ export default function DashboardPage() {
           />
         </li>
       </ul>
-    </div>
+    </MainLayout>
   );
 }

@@ -40,7 +40,7 @@ export function CreateAppModal() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="flex items-center gap-2" variant="outline">
+        <Button className="flex w-full items-center gap-2">
           <PlusCircledIcon />
           Create App
         </Button>

@@ -74,6 +74,7 @@ model Subscriber {
 model App {
     id              String    @id @default(cuid())
     createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
     name            String
     token           String    @unique
     email           String
