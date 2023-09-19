@@ -1,4 +1,4 @@
-import { type ChangeEvent, useRef } from 'react';
+import { type ChangeEvent, useRef, type ReactNode } from 'react';
 import { TrashIcon } from '@radix-ui/react-icons';
 import {
   Dialog,
@@ -13,15 +13,17 @@ import InputField from './InputField';
 
 const ConfirmationText = ({ text }: { text: string }) => (
   <span>
-    Type the name of app to confirm: <code>{text}.</code>
+    Retype the following to confirm: <code>{text}.</code>
   </span>
 );
 interface IDeleteModal {
+  children: ReactNode;
   confirmationText: string;
   onConfirm: () => void;
 }
 
 export default function DeleteModal({
+  children,
   onConfirm,
   confirmationText,
 }: IDeleteModal) {
@@ -43,17 +45,16 @@ export default function DeleteModal({
       <DialogTrigger asChild>
         <Button variant="destructive" className=" gap-2 ">
           <TrashIcon />
-          <span>Delete App</span>
+          <span>{children}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete App</DialogTitle>
+          <DialogTitle>{children}</DialogTitle>
         </DialogHeader>
 
         <InputField
           id="confirm-text"
-          placeholder="Type the name of app to confirm"
           label={<ConfirmationText text={confirmationText} />}
           onChange={checkConfirmationText}
         />

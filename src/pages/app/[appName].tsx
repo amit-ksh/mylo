@@ -146,7 +146,9 @@ const SettingPanel = () => {
         <DangerModal
           confirmationText={appName}
           onConfirm={() => console.log('delete app')}
-        />
+        >
+          Delete App
+        </DangerModal>
       </CardFooter>
     </Card>
   );
