@@ -1,4 +1,7 @@
+import type { GetServerSidePropsContext } from 'next';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -21,11 +24,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import MainLayout from '@/components/layouts/MainLayout';
 
-import { useParams } from 'next/navigation';
 import DangerModal from '@/components/DeleteModal';
 import TokenField from '@/components/TokenField';
 import InputField from '@/components/InputField';
 import { CreateAppModal } from '@/components/CreateAppModal';
+import { isAutheticated } from '@/lib/protected';
 
 export default function AppPage() {
   return (
@@ -153,3 +156,7 @@ const SettingPanel = () => {
     </Card>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return await isAutheticated(ctx);
+}

@@ -1,7 +1,5 @@
-'use client';
-
-import * as React from 'react';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/react';
 
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
@@ -26,6 +24,16 @@ interface IUserAuthForm {
 
 export function UserAuthForm({ className, ...props }: IUserAuthForm) {
   const { data: sessionData } = useSession();
+  const router = useRouter();
+
+  if (sessionData?.user) {
+    void router.push({ pathname: '/' });
+  }
+
+  const signin = (provider: string) => {
+    void signIn(provider);
+    void router.push({ pathname: '/' });
+  };
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
@@ -34,11 +42,7 @@ export function UserAuthForm({ className, ...props }: IUserAuthForm) {
           key={provider.value}
           variant="outline"
           type="button"
-          onClick={
-            sessionData
-              ? () => void signOut()
-              : () => void signIn(provider.value)
-          }
+          onClick={() => signin(provider.value)}
         >
           <provider.icon className="mr-2 h-4 w-4" />
           {provider.name}

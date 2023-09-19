@@ -15,7 +15,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           <MainNav className="mx-6" />
 
           <div className="flex items-center space-x-4">
-            <Button className="" onClick={void signOut}>
+            <Button className="" onClick={() => void signOut()}>
               Log Out
             </Button>
           </div>

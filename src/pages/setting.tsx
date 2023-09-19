@@ -1,3 +1,6 @@
+import type { GetServerSidePropsContext } from 'next';
+import { useParams } from 'next/navigation';
+
 import DeleteModal from '@/components/DeleteModal';
 import InputField from '@/components/InputField';
 import MainLayout from '@/components/layouts/MainLayout';
@@ -10,14 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { isAutheticated } from '@/lib/protected';
 import { CheckIcon } from '@radix-ui/react-icons';
-import { useParams } from 'next/navigation';
-import React, { useState } from 'react';
 
 export default function Setting() {
   const params = useParams();
-  const [name, setName] = useState<string>('John Doe');
 
+  const name = 'John Doe';
   const email = 'johndoe@mail.com';
   const createdAt = '12-06-2023';
   const verified = true;
@@ -89,4 +91,8 @@ export default function Setting() {
       </Card>
     </MainLayout>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return await isAutheticated(ctx);
 }

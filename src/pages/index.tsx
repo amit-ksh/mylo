@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+import type { GetServerSidePropsContext, Metadata } from 'next';
 import Link from 'next/link';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreateAppModal } from '@/components/CreateAppModal';
 import MainLayout from '@/components/layouts/MainLayout';
+import { isAutheticated } from '@/lib/protected';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -93,4 +94,8 @@ export default function DashboardPage() {
       </ul>
     </MainLayout>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return await isAutheticated(ctx);
 }
