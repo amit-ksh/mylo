@@ -1,7 +1,7 @@
 import type { GetServerSidePropsContext } from 'next';
 import { useParams } from 'next/navigation';
 
-import DeleteModal from '@/components/DeleteModal';
+import DeleteModal from '@/components/DangerModal';
 import InputField from '@/components/InputField';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Button } from '@/components/ui/button';

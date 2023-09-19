@@ -2,9 +2,10 @@ import type { GetServerSidePropsContext, Metadata } from 'next';
 import Link from 'next/link';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreateAppModal } from '@/components/CreateAppModal';
+import CreateModal from '@/components/CreateModal';
 import MainLayout from '@/components/layouts/MainLayout';
 import { isAutheticated } from '@/lib/protected';
+import CreateAppForm from '@/components/form/CreateAppForm';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -44,7 +45,9 @@ export default function DashboardPage() {
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-bold">Apps</h2>
         <div className="max-w-lg">
-          <CreateAppModal />
+          <CreateModal title="Create App">
+            <CreateAppForm />
+          </CreateModal>
         </div>
       </div>
 

@@ -24,11 +24,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import MainLayout from '@/components/layouts/MainLayout';
 
-import DangerModal from '@/components/DeleteModal';
+import DangerModal from '@/components/DangerModal';
 import TokenField from '@/components/TokenField';
 import InputField from '@/components/InputField';
-import { CreateAppModal } from '@/components/CreateAppModal';
+import CreateModal from '@/components/CreateModal';
 import { isAutheticated } from '@/lib/protected';
+import CreateAppForm from '@/components/form/CreateAppForm';
 
 export default function AppPage() {
   return (
@@ -66,7 +67,9 @@ export function Mails() {
   return (
     <div>
       <div>
-        <CreateAppModal />
+        <CreateModal title="Create Mail">
+          <CreateAppForm />
+        </CreateModal>
       </div>
       <Table className="my-2 min-w-[500px] overflow-x-auto">
         <TableCaption>List of mails send by you.</TableCaption>

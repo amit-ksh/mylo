@@ -22,7 +22,7 @@ interface IDeleteModal {
   onConfirm: () => void;
 }
 
-export default function DeleteModal({
+export default function DangerModal({
   children,
   onConfirm,
   confirmationText,

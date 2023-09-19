@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { UserAuthForm } from '@/components/AuthForm';
+import { UserAuthForm } from '@/components/form/AuthForm';
 import AppLogo from '@/components/AppLogo';
 
 export default function LoginPage() {

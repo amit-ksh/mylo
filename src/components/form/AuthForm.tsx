@@ -2,8 +2,8 @@ import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
-import { Icons } from './ui/icons';
+import { Button } from '../ui/button';
+import { Icons } from '../ui/icons';
 
 const providers = [
   {
