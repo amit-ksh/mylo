@@ -13,7 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
+} from '@/components/ui/form';
 
 import { api } from '@/utils/api';
 import { appCreateSchema } from '@/schemas/app';

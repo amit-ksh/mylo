@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CreateModal from '@/components/CreateModal';
 import MainLayout from '@/components/layouts/MainLayout';
+import AppForm from '@/components/form/AppForm';
 import { isAutheticated } from '@/lib/protected';
-import CreateAppForm from '@/components/form/CreateAppForm';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -46,7 +46,7 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold">Apps</h2>
         <div className="max-w-lg">
           <CreateModal title="Create App">
-            <CreateAppForm />
+            <AppForm />
           </CreateModal>
         </div>
       </div>

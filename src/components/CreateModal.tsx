@@ -25,7 +25,7 @@ export default function CreateModal({
           {title}
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-80">
+      <DialogContent>
         <div className="grid gap-4">
           <DialogHeader className="space-y-2">
             <DialogTitle>{title}</DialogTitle>

@@ -28,8 +28,8 @@ import DangerModal from '@/components/DangerModal';
 import TokenField from '@/components/TokenField';
 import InputField from '@/components/InputField';
 import CreateModal from '@/components/CreateModal';
+import MailForm from '@/components/form/MailForm';
 import { isAutheticated } from '@/lib/protected';
-import CreateAppForm from '@/components/form/CreateAppForm';
 
 export default function AppPage() {
   return (
@@ -65,11 +65,14 @@ const mails = [
 
 export function Mails() {
   return (
-    <div>
-      <div>
-        <CreateModal title="Create Mail">
-          <CreateAppForm />
-        </CreateModal>
+    <div className="mx-10">
+      <div className="m-4 flex items-center gap-4">
+        <h2 className="text-2xl font-bold">Mails</h2>
+        <div className="max-w-lg">
+          <CreateModal title="Send Mail">
+            <MailForm />
+          </CreateModal>
+        </div>
       </div>
       <Table className="my-2 min-w-[500px] overflow-x-auto">
         <TableCaption>List of mails send by you.</TableCaption>
