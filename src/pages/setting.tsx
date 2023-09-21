@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { isAutheticated } from '@/lib/protected';
-import { CheckIcon } from '@radix-ui/react-icons';
 
 export default function Setting() {
   const params = useParams();
@@ -22,7 +21,6 @@ export default function Setting() {
   const name = 'John Doe';
   const email = 'johndoe@mail.com';
   const createdAt = '12-06-2023';
-  const verified = true;
 
   console.log(params);
   return (
@@ -64,21 +62,6 @@ export default function Setting() {
             className="disabled:opacity-1 font-semibold"
             disabled
           />
-          <div className="flex items-center gap-2">
-            <p
-              className={`font-medium ${
-                !verified ? 'text-red-600' : 'text-green-400'
-              }`}
-            >
-              Email Verified{' '}
-              <span className="inline-block ">{verified && <CheckIcon />}</span>
-            </p>
-            {!verified && (
-              <Button variant="outline" className="p-1 text-sm">
-                Resend Email
-              </Button>
-            )}
-          </div>
         </CardContent>
         <CardFooter className="flex items-center justify-end">
           <DeleteModal

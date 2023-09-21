@@ -1,3 +1,4 @@
+import type { BaseSyntheticEvent } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,19 +24,28 @@ const formSchema = appCreateSchema.omit({ userId: true });
 export default function CreateAppForm() {
   const { mutate } = api.app.create.useMutation();
 
+  const userId = '1242';
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: '', email: '' },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const userId = '';
+  function onSubmit(
+    values: z.infer<typeof formSchema>,
+    e?: BaseSyntheticEvent,
+  ) {
+    e?.preventDefault();
+
     mutate({ ...values, userId });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={void form.handleSubmit(onSubmit)} className="grid gap-2">
+      <form
+        id="app-form"
+        className="grid gap-2"
+        onSubmit={e => void form.handleSubmit(onSubmit)(e)}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -71,7 +81,9 @@ export default function CreateAppForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Create</Button>
+        <Button type="submit" form="app-form">
+          Create
+        </Button>
       </form>
     </Form>
   );

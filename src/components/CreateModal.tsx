@@ -30,7 +30,7 @@ export default function CreateModal({
           <DialogHeader className="space-y-2">
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
-          {children}
+          <div>{children}</div>
         </div>
       </DialogContent>
     </Dialog>

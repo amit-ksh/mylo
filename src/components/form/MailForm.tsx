@@ -45,15 +45,15 @@ export default function CreateMailForm() {
     console.log(e);
 
     e?.preventDefault();
-    console.log(data);
-    console.log(mutate, appId);
+
+    mutate(data);
   }
 
   return (
     <Form {...form}>
       <form
         lang={form.getValues('language')}
-        onSubmit={void form.handleSubmit(onSubmit)}
+        onSubmit={e => void form.handleSubmit(onSubmit)(e)}
         className="grid gap-2"
       >
         <FormField
