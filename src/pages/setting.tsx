@@ -1,5 +1,4 @@
 import type { GetServerSidePropsContext } from 'next';
-import { useParams } from 'next/navigation';
 
 import DeleteModal from '@/components/DangerModal';
 import InputField from '@/components/InputField';
@@ -14,15 +13,21 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { isAutheticated } from '@/lib/protected';
+import { signOut, useSession } from 'next-auth/react';
+import { api } from '@/utils/api';
 
 export default function Setting() {
-  const params = useParams();
+  const { data: sessionData } = useSession();
+  const { data: user } = api.user.get.useQuery({
+    id: sessionData?.user.id ?? '',
+  });
+  const { mutate } = api.user.delete.useMutation();
 
-  const name = 'John Doe';
-  const email = 'johndoe@mail.com';
-  const createdAt = '12-06-2023';
+  const deleteUser = () => {
+    mutate({ id: sessionData?.user.id ?? '' });
+    void signOut();
+  };
 
-  console.log(params);
   return (
     <MainLayout>
       <Card className="mx-auto my-4 max-w-5xl">
@@ -43,14 +48,14 @@ export default function Setting() {
             type="text"
             label="Name"
             className="disabled:opacity-1 font-semibold"
-            defaultValue={name}
+            defaultValue={user?.name ?? ''}
           />
           <InputField
             id="createdAt"
             type="data"
             label="Created At"
             className="disabled:opacity-1 font-semibold"
-            value={createdAt}
+            value={user?.createdAt.toUTCString()}
             disabled
           />
 
@@ -58,15 +63,15 @@ export default function Setting() {
             id="email"
             type="email"
             label="Email"
-            value={email}
+            value={user?.email ?? ''}
             className="disabled:opacity-1 font-semibold"
             disabled
           />
         </CardContent>
         <CardFooter className="flex items-center justify-end">
           <DeleteModal
-            confirmationText={email}
-            onConfirm={() => console.log('delete account')}
+            confirmationText={user?.email ?? ''}
+            onConfirm={deleteUser}
           >
             Delete Account
           </DeleteModal>

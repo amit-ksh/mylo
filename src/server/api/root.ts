@@ -3,6 +3,7 @@ import { appRouter as AppRouter } from '@/server/api/routers/app';
 import { createTRPCRouter } from '@/server/api/trpc';
 import { mailRouter } from './routers/mail';
 import { subscriberRouter } from './routers/subscriber';
+import { userRouter } from './routers/user';
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   app: AppRouter,
   mail: mailRouter,
   subscriber: subscriberRouter,
+  user: userRouter,
 });
 
 // export type definition of API

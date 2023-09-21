@@ -32,6 +32,7 @@ import MailForm from '@/components/form/MailForm';
 import { isAutheticated } from '@/lib/protected';
 import { api } from '@/utils/api';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 export default function AppPage() {
   const pathname = usePathname();
@@ -117,6 +118,14 @@ interface ISettingPanel {
 
 const SettingPanel = ({ app }: ISettingPanel) => {
   const [appName, setAppName] = useState(app.name);
+  const { mutate } = api.app.delete.useMutation();
+
+  const router = useRouter();
+
+  const deleteApp = () => {
+    mutate({ id: app.id, userId: app.userId });
+    void router.push({ pathname: '/' });
+  };
 
   return (
     <Card className="mx-auto max-w-5xl">
@@ -164,10 +173,7 @@ const SettingPanel = ({ app }: ISettingPanel) => {
         <TokenField id="token" label="Token" value={app.token} />
       </CardContent>
       <CardFooter className="flex items-center justify-end">
-        <DangerModal
-          confirmationText={app.name}
-          onConfirm={() => console.log('delete app')}
-        >
+        <DangerModal confirmationText={app.name} onConfirm={deleteApp}>
           Delete App
         </DangerModal>
       </CardFooter>
