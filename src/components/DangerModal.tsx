@@ -48,7 +48,7 @@ export default function DangerModal({
           <span>{children}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="border-2 border-black">
         <DialogHeader>
           <DialogTitle>{children}</DialogTitle>
         </DialogHeader>

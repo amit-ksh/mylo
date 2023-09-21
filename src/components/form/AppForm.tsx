@@ -20,10 +20,11 @@ import {
 import { api } from '@/utils/api';
 import { appCreateSchema } from '@/schemas/app';
 import { useSession } from 'next-auth/react';
+import { useModal } from '@/hooks/useModal';
 
 const formSchema = appCreateSchema.omit({ userId: true });
 
-export default function CreateAppForm() {
+export default function CreateAppForm({ id }: { id: string }) {
   const { mutate } = api.app.create.useMutation();
   const { data: sessionData } = useSession();
 
@@ -34,6 +35,8 @@ export default function CreateAppForm() {
     defaultValues: { name: '', email: '' },
   });
 
+  const { close } = useModal(id);
+
   function onSubmit(
     values: z.infer<typeof formSchema>,
     e?: BaseSyntheticEvent,
@@ -43,12 +46,14 @@ export default function CreateAppForm() {
       form.setError('root', { message: 'User not found' });
 
     mutate({ ...values, userId });
+
+    close();
   }
 
   return (
     <Form {...form}>
       <form
-        id="app-form"
+        id={id}
         className="grid gap-2"
         onSubmit={e => void form.handleSubmit(onSubmit)(e)}
       >

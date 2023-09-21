@@ -75,8 +75,8 @@ export function Mails({ appId }: { appId: string }) {
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-semibold">Mails</h2>
         <div className="max-w-lg">
-          <CreateModal title="Send Mail">
-            <MailForm appId={appId} />
+          <CreateModal id="mail-form" title="Send Mail">
+            <MailForm id="mail-form" appId={appId} />
           </CreateModal>
         </div>
       </div>

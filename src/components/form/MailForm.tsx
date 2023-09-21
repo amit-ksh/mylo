@@ -26,18 +26,21 @@ import { Textarea } from '@/components/ui/textarea';
 
 import { api } from '@/utils/api';
 import { mailSchema } from '@/schemas/mail';
+import { useModal } from '@/hooks/useModal';
 
 const formSchema = mailSchema.omit({ mailId: true });
 
 const languages = ['english', 'hindi', 'french', 'spanish'];
 
-export default function MailForm({ appId }: { appId: string }) {
+export default function MailForm({ id, appId }: { id: string; appId: string }) {
   const { mutate } = api.mail.send.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { content: '', subject: '', language: languages[0], appId },
   });
+
+  const { close } = useModal(id);
 
   function onSubmit(
     values: z.infer<typeof formSchema>,
@@ -46,6 +49,8 @@ export default function MailForm({ appId }: { appId: string }) {
     e?.preventDefault();
 
     mutate(values);
+
+    close();
   }
 
   return (

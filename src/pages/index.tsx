@@ -57,8 +57,8 @@ export default function DashboardPage() {
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-bold">Apps</h2>
         <div className="max-w-lg">
-          <CreateModal title="Create App">
-            <AppForm />
+          <CreateModal id="app-form" title="Create App">
+            <AppForm id="app-form" />
           </CreateModal>
         </div>
       </div>
