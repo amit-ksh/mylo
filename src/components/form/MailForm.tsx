@@ -31,27 +31,27 @@ const formSchema = mailSchema.omit({ mailId: true });
 
 const languages = ['english', 'hindi', 'french', 'spanish'];
 
-export default function CreateMailForm() {
+export default function MailForm({ appId }: { appId: string }) {
   const { mutate } = api.mail.send.useMutation();
-
-  const appId = '2131';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { content: '', subject: '', language: languages[0], appId },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>, e?: BaseSyntheticEvent) {
-    console.log(e);
-
+  function onSubmit(
+    values: z.infer<typeof formSchema>,
+    e?: BaseSyntheticEvent,
+  ) {
     e?.preventDefault();
 
-    mutate(data);
+    mutate(values);
   }
 
   return (
     <Form {...form}>
       <form
+        id="mail-form"
         lang={form.getValues('language')}
         onSubmit={e => void form.handleSubmit(onSubmit)(e)}
         className="grid gap-2"
@@ -122,7 +122,9 @@ export default function CreateMailForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" form="mail-form">
+          Send
+        </Button>
       </form>
     </Form>
   );

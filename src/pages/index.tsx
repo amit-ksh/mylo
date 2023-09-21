@@ -6,6 +6,8 @@ import CreateModal from '@/components/CreateModal';
 import MainLayout from '@/components/layouts/MainLayout';
 import AppForm from '@/components/form/AppForm';
 import { isAutheticated } from '@/lib/protected';
+import { useSession } from 'next-auth/react';
+import { api } from '@/utils/api';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -15,31 +17,41 @@ interface IAppCard {
   name: string;
   createdAt: Date;
   totalSubscribers: number;
+  totalMails: number;
 }
-function AppCard({ name, createdAt, totalSubscribers }: IAppCard) {
+function AppCard({ name, createdAt, totalSubscribers, totalMails }: IAppCard) {
   return (
     <Card className="relative  transition-shadow hover:shadow-xl">
       <CardHeader className="space-y-0 pb-2">
-        <CardTitle className="text-lg font-medium underline">
+        <CardTitle className="text-lg font-medium">
           <Link
-            href="/app/app-name"
-            className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+            as={`/app/${name}`}
+            href={`/app/${name}`}
+            className="underline before:absolute before:left-0 before:top-0 before:h-full before:w-full"
           >
             {name}
           </Link>
+          <p className="text-xs text-muted-foreground">
+            Created At: {createdAt.getDate().toString()}-
+            {createdAt.getMonth().toString()}-
+            {createdAt.getFullYear().toString()}
+          </p>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-xs text-muted-foreground">
-          {createdAt.getDate().toString()}-{createdAt.getMonth().toString()}-
-          {createdAt.getFullYear().toString()}
-        </p>
         <p className="text-xs font-semibold">{totalSubscribers} subscribers</p>
+        <p className="text-xs font-semibold">{totalMails} mails sent.</p>
       </CardContent>
     </Card>
   );
 }
+
 export default function DashboardPage() {
+  const { data: sessionData } = useSession();
+  const { data } = api.app.getAll.useQuery({
+    userId: sessionData?.user.id ?? '',
+  });
+
   return (
     <MainLayout>
       <div className="m-4 flex items-center gap-4">
@@ -52,48 +64,16 @@ export default function DashboardPage() {
       </div>
 
       <ul className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
-        <li>
-          <AppCard
-            name="app-name"
-            createdAt={new Date(Date.now())}
-            totalSubscribers={87}
-          />
-        </li>
+        {data?.map((app, idx) => (
+          <li key={idx}>
+            <AppCard
+              name={app.name}
+              createdAt={app.createdAt}
+              totalSubscribers={app._count.subscriber}
+              totalMails={app._count.mails}
+            />
+          </li>
+        ))}
       </ul>
     </MainLayout>
   );

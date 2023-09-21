@@ -16,8 +16,7 @@ export const appRouter = createTRPCRouter({
         email: input.email,
         userId: input.userId,
       };
-      // eslint-disable-next-line
-      const token = jwt.sign(payload, 'secret');
+      const token = jwt.sign(payload, env.JWT_SECRET);
 
       return ctx.prisma.app
         .create({
@@ -79,13 +78,27 @@ export const appRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.app.findMany({ where: input });
+      return ctx.prisma.app.findMany({
+        where: input,
+        include: {
+          _count: {
+            select: { mails: true, subscriber: true },
+          },
+        },
+      });
     }),
 
   get: publicProcedure
-    .input(z.object({ userId: z.string(), id: z.string() }))
+    .input(z.object({ userId: z.string(), name: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.app.findMany({ where: input });
+      return ctx.prisma.app.findFirst({
+        where: input,
+        include: {
+          _count: {
+            select: { mails: true, subscriber: true },
+          },
+        },
+      });
     }),
   verify: publicProcedure.input(z.string()).mutation(({ ctx, input }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

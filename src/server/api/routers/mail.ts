@@ -1,3 +1,4 @@
+import * as z from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
 import { Draft, nylas } from '@/lib/nylas';
@@ -63,5 +64,24 @@ export const mailRouter = createTRPCRouter({
       });
 
       return { id: batchId };
+    }),
+  getAll: publicProcedure
+    .input(z.object({ appId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.mail.findMany({
+        where: input,
+        distinct: 'batchId',
+        include: {
+          app: {
+            select: {
+              _count: {
+                select: {
+                  mails: true,
+                },
+              },
+            },
+          },
+        },
+      });
     }),
 });

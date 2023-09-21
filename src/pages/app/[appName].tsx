@@ -1,5 +1,5 @@
 import type { GetServerSidePropsContext } from 'next';
-import { useParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -30,8 +30,20 @@ import InputField from '@/components/InputField';
 import CreateModal from '@/components/CreateModal';
 import MailForm from '@/components/form/MailForm';
 import { isAutheticated } from '@/lib/protected';
+import { api } from '@/utils/api';
+import { useSession } from 'next-auth/react';
 
 export default function AppPage() {
+  const pathname = usePathname();
+  const appName = pathname.split('/').at(-1) ?? '';
+
+  const { data: sessionData } = useSession();
+  const { data: app } = api.app.get.useQuery({
+    userId: sessionData?.user.id ?? '',
+    name: appName,
+  }) as unknown as { data: ISettingPanel['app'] };
+  const appId = app?.id ?? '';
+
   return (
     <MainLayout>
       <div className="m-4 ">
@@ -42,11 +54,11 @@ export default function AppPage() {
             <TabsTrigger value="setting">Setting</TabsTrigger>
           </TabsList>
           <TabsContent value="mails">
-            <Mails />
+            <Mails appId={appId} />
           </TabsContent>
           <TabsContent value="analytics">Analytics</TabsContent>
           <TabsContent value="setting" className="mx-auto">
-            <SettingPanel />
+            <SettingPanel app={app} />
           </TabsContent>
         </Tabs>
       </div>
@@ -54,23 +66,16 @@ export default function AppPage() {
   );
 }
 
-const mails = [
-  {
-    id: 'kasdnk24ksdq4lki',
-    batchId: 'asfjeillnldfskln',
-    createdAt: '12-08-2023',
-    totalMailsSend: 23,
-  },
-];
+export function Mails({ appId }: { appId: string }) {
+  const { data: mails } = api.mail.getAll.useQuery({ appId });
 
-export function Mails() {
   return (
-    <div className="mx-10">
+    <div>
       <div className="m-4 flex items-center gap-4">
-        <h2 className="text-2xl font-bold">Mails</h2>
+        <h2 className="text-2xl font-semibold">Mails</h2>
         <div className="max-w-lg">
           <CreateModal title="Send Mail">
-            <MailForm />
+            <MailForm appId={appId} />
           </CreateModal>
         </div>
       </div>
@@ -84,11 +89,11 @@ export function Mails() {
           </TableRow>
         </TableHeader>
         <TableBody className="">
-          {mails.map(mail => (
+          {mails?.map(mail => (
             <TableRow key={mail.batchId}>
               <TableCell className="font-medium">{mail.batchId}</TableCell>
-              <TableCell className="">{mail.createdAt}</TableCell>
-              <TableCell className="">{mail.totalMailsSend}</TableCell>
+              <TableCell className="">{mail.createdAt.toUTCString()}</TableCell>
+              <TableCell className="">{mail.app._count.mails}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -97,21 +102,28 @@ export function Mails() {
   );
 }
 
-const SettingPanel = () => {
-  const params = useParams();
-  const token = 'sdslsfja4wklmtk3kp';
-  const appId = 'kskliiragkfjgfld';
-  const senderEmail = 'johndoe@mail.com';
+interface ISettingPanel {
+  app: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    name: string;
+    token: string;
+    email: string;
+    emailVerified: boolean;
+    userId: string;
+  };
+}
 
-  const [appName, setAppName] = useState('app-name');
+const SettingPanel = ({ app }: ISettingPanel) => {
+  const [appName, setAppName] = useState(app.name);
 
-  console.log(params);
   return (
     <Card className="mx-auto max-w-5xl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="">
-            <CardTitle className="text-2xl">Setting</CardTitle>
+            <CardTitle className="text-2xl">App Setting</CardTitle>
             <CardDescription>
               You can change your app setting here.
             </CardDescription>
@@ -143,17 +155,17 @@ const SettingPanel = () => {
           id="senderEmail"
           type="email"
           label="Sender's Name"
-          value={senderEmail}
+          value={app.email}
           className="disabled:opacity-90"
           disabled
         />
 
-        <TokenField id="appId" label="App ID" value={appId} />
-        <TokenField id="token" label="Token" value={token} />
+        <TokenField id="appId" label="App ID" value={app.id} />
+        <TokenField id="token" label="Token" value={app.token} />
       </CardContent>
       <CardFooter className="flex items-center justify-end">
         <DangerModal
-          confirmationText={appName}
+          confirmationText={app.name}
           onConfirm={() => console.log('delete app')}
         >
           Delete App

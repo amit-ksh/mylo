@@ -1,5 +1,6 @@
-import type { BaseSyntheticEvent } from 'react';
-import type { z } from 'zod';
+import { type BaseSyntheticEvent } from 'react';
+import { type z } from 'zod';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -18,13 +19,16 @@ import {
 
 import { api } from '@/utils/api';
 import { appCreateSchema } from '@/schemas/app';
+import { useSession } from 'next-auth/react';
 
 const formSchema = appCreateSchema.omit({ userId: true });
 
 export default function CreateAppForm() {
   const { mutate } = api.app.create.useMutation();
+  const { data: sessionData } = useSession();
 
-  const userId = '1242';
+  const userId = sessionData?.user.id ?? '';
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: '', email: '' },
@@ -35,6 +39,8 @@ export default function CreateAppForm() {
     e?: BaseSyntheticEvent,
   ) {
     e?.preventDefault();
+    if (!sessionData?.user)
+      form.setError('root', { message: 'User not found' });
 
     mutate({ ...values, userId });
   }
