@@ -5,6 +5,8 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { appCreateSchema } from '@/schemas/app';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
+import { TRPCError } from '@trpc/server';
+import { createNewUserMail } from '@/lib/templates';
 
 export const appRouter = createTRPCRouter({
   create: publicProcedure
@@ -16,12 +18,32 @@ export const appRouter = createTRPCRouter({
       };
       const token = jwt.sign(payload, env.JWT_SECRET);
 
-      return ctx.prisma.app.create({
-        data: {
-          ...payload,
-          token,
-        },
-      });
+      return ctx.prisma.app
+        .create({
+          data: {
+            ...payload,
+            token,
+          },
+          select: {
+            id: true,
+            name: true,
+            user: { select: { email: true } },
+          },
+        })
+        .then(app => {
+          if (!app.user.email) return;
+          void createNewUserMail(app.user.email, app.name)
+            .send()
+            .then(message => {
+              console.log(`${message.id} was sent`);
+            });
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Server Error!',
+          });
+        });
     }),
 
   update: publicProcedure
@@ -41,7 +63,7 @@ export const appRouter = createTRPCRouter({
     }),
 
   delete: publicProcedure
-    .input(z.object({ userId: z.string(), id: z.string() }))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const app = await ctx.prisma.app.delete({
         where: input,

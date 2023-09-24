@@ -58,7 +58,7 @@ export default function Setting() {
             type="text"
             label="Name"
             className="disabled:opacity-1 font-semibold"
-            defaultValue={name}
+            value={name}
             onChange={e => setName(e.target.value)}
           />
           <InputField

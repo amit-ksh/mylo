@@ -1,4 +1,5 @@
-import { type ChangeEvent, useRef, type ReactNode } from 'react';
+import { useRef } from 'react';
+import type { ChangeEvent, ReactNode, FormEvent } from 'react';
 import { TrashIcon } from '@radix-ui/react-icons';
 import {
   Dialog,
@@ -40,6 +41,12 @@ export default function DangerModal({
     }
   };
 
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    onConfirm();
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -49,26 +56,29 @@ export default function DangerModal({
         </Button>
       </DialogTrigger>
       <DialogContent className="border-2 border-black">
-        <DialogHeader>
-          <DialogTitle>{children}</DialogTitle>
-        </DialogHeader>
+        <form id="delete-form" onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>{children}</DialogTitle>
+          </DialogHeader>
 
-        <InputField
-          id="confirm-text"
-          label={<ConfirmationText text={confirmationText} />}
-          onChange={checkConfirmationText}
-        />
+          <InputField
+            id="confirm-text"
+            label={<ConfirmationText text={confirmationText} />}
+            onChange={checkConfirmationText}
+          />
 
-        <DialogFooter className="mt-2 flex gap-2">
-          <Button
-            ref={deleteButtonRef}
-            variant="destructive"
-            onClick={onConfirm}
-            disabled={true}
-          >
-            Delete
-          </Button>
-        </DialogFooter>
+          <DialogFooter className="mt-2 flex gap-2">
+            <Button
+              ref={deleteButtonRef}
+              type="submit"
+              form="delete-form"
+              variant="destructive"
+              disabled={true}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

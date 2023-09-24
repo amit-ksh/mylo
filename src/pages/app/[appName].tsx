@@ -110,7 +110,6 @@ interface ISettingPanel {
     updatedAt: Date;
     name: string;
     token: string;
-    userId: string;
   };
 }
 
@@ -122,7 +121,9 @@ const SettingPanel = ({ app }: ISettingPanel) => {
   const router = useRouter();
 
   const deleteApp = () => {
-    deleteapp({ id: app.id, userId: app.userId });
+    console.log(app.id);
+
+    deleteapp({ id: app.id });
     void router.push({ pathname: '/' });
   };
 
