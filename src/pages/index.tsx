@@ -48,7 +48,7 @@ function AppCard({ name, createdAt, totalSubscribers, totalMails }: IAppCard) {
 
 export default function DashboardPage() {
   const { data: sessionData } = useSession();
-  const { data } = api.app.getAll.useQuery({
+  const { data: apps } = api.app.getAll.useQuery({
     userId: sessionData?.user.id ?? '',
   });
 
@@ -64,16 +64,20 @@ export default function DashboardPage() {
       </div>
 
       <ul className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {data?.map((app, idx) => (
-          <li key={idx}>
-            <AppCard
-              name={app.name}
-              createdAt={app.createdAt}
-              totalSubscribers={app._count.subscriber}
-              totalMails={app._count.mails}
-            />
-          </li>
-        ))}
+        {!apps || apps?.length > 0 ? (
+          apps?.map((app, idx) => (
+            <li key={idx}>
+              <AppCard
+                name={app.name}
+                createdAt={app.createdAt}
+                totalSubscribers={app._count.subscriber}
+                totalMails={app._count.mails}
+              />
+            </li>
+          ))
+        ) : (
+          <p className="text-center text-foreground">No app created yet.</p>
+        )}
       </ul>
     </MainLayout>
   );

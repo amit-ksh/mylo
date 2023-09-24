@@ -8,10 +8,20 @@ export const userRouter = createTRPCRouter({
       return await ctx.prisma.user.findUnique({
         where: input,
         select: {
+          id: true,
           name: true,
           createdAt: true,
           email: true,
         },
+      });
+    }),
+
+  update: publicProcedure
+    .input(z.object({ id: z.string(), data: z.object({ name: z.string() }) }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.user.update({
+        where: { id: input.id },
+        data: input.data,
       });
     }),
 

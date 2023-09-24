@@ -22,7 +22,7 @@ import { appCreateSchema } from '@/schemas/app';
 import { useSession } from 'next-auth/react';
 import { useModal } from '@/hooks/useModal';
 
-const formSchema = appCreateSchema.omit({ userId: true });
+const formSchema = appCreateSchema.pick({ name: true });
 
 export default function CreateAppForm({ id }: { id: string }) {
   const { mutate } = api.app.create.useMutation();
@@ -32,7 +32,7 @@ export default function CreateAppForm({ id }: { id: string }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: '', email: '' },
+    defaultValues: { name: '' },
   });
 
   const { close } = useModal(id);
@@ -66,27 +66,6 @@ export default function CreateAppForm({ id }: { id: string }) {
               <FormDescription>Enter a unique app name.</FormDescription>
               <FormControl>
                 <Input placeholder="app-name" required {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormDescription>
-                Enter an email for sending your mails.
-              </FormDescription>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="john@doe.com"
-                  required
-                  {...field}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

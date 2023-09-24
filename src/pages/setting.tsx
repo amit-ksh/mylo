@@ -15,17 +15,27 @@ import {
 import { isAutheticated } from '@/lib/protected';
 import { signOut, useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
+import { useState } from 'react';
 
 export default function Setting() {
   const { data: sessionData } = useSession();
   const { data: user } = api.user.get.useQuery({
     id: sessionData?.user.id ?? '',
   });
-  const { mutate } = api.user.delete.useMutation();
+  const { mutate: deleteuser } = api.user.delete.useMutation();
+  const { mutate: updateuser } = api.user.update.useMutation();
+
+  const [name, setName] = useState(user?.name ?? '');
 
   const deleteUser = () => {
-    mutate({ id: sessionData?.user.id ?? '' });
+    deleteuser({ id: sessionData?.user.id ?? '' });
     void signOut();
+  };
+
+  const updateUser = () => {
+    if (!user?.id || user?.name === name) return;
+
+    updateuser({ id: user?.id, data: { name: name } });
   };
 
   return (
@@ -38,7 +48,7 @@ export default function Setting() {
               <CardDescription>Your account details.</CardDescription>
             </div>
             <div>
-              <Button>Save</Button>
+              <Button onClick={updateUser}>Save</Button>
             </div>
           </div>
         </CardHeader>
@@ -48,7 +58,8 @@ export default function Setting() {
             type="text"
             label="Name"
             className="disabled:opacity-1 font-semibold"
-            defaultValue={user?.name ?? ''}
+            defaultValue={name}
+            onChange={e => setName(e.target.value)}
           />
           <InputField
             id="createdAt"

@@ -3,45 +3,25 @@ import jwt from 'jsonwebtoken';
 
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { appCreateSchema } from '@/schemas/app';
-import { Draft, nylas } from '@/lib/nylas';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 
 export const appRouter = createTRPCRouter({
   create: publicProcedure
-    .input(appCreateSchema)
+    .input(appCreateSchema.omit({ email: true }))
     .mutation(async ({ ctx, input }) => {
       const payload = {
         name: input.name,
-        email: input.email,
         userId: input.userId,
       };
       const token = jwt.sign(payload, env.JWT_SECRET);
 
-      return ctx.prisma.app
-        .create({
-          data: {
-            ...payload,
-            token,
-          },
-        })
-        .then(({ id }) => {
-          const encodedId = jwt.sign(id, env.JWT_SECRET);
-          const draft = new Draft(nylas, {
-            subject: 'Verify your app email',
-            body: `Click the following link to verify for email: https://localhost:3000/app/verify/${encodedId}`,
-            to: [{ email: payload.email }],
-          });
-          draft
-            .send()
-            .then(message => {
-              console.log(`${message.id} was sent`);
-            })
-            .catch(() => 'Server error! Try agian later.');
-
-          return id;
-        })
-        .catch(() => 'Invalid Inputs');
+      return ctx.prisma.app.create({
+        data: {
+          ...payload,
+          token,
+        },
+      });
     }),
 
   update: publicProcedure
@@ -52,15 +32,12 @@ export const appRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.app
-        .update({
-          where: {
-            id: input.id,
-          },
-          data: input.data,
-        })
-        .then(({ id }) => id)
-        .catch(() => 'Invalid Inputs');
+      return ctx.prisma.app.update({
+        where: {
+          id: input.id,
+        },
+        data: input.data,
+      });
     }),
 
   delete: publicProcedure

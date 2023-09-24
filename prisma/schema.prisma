@@ -77,7 +77,7 @@ model App {
     updatedAt       DateTime  @updatedAt @default(now())
     name            String
     token           String    @unique
-    email           String
+    email           String?
     emailVerified   Boolean   @default(false)
     userId          String
     subscriber      Subscriber[]

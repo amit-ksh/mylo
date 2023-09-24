@@ -110,21 +110,25 @@ interface ISettingPanel {
     updatedAt: Date;
     name: string;
     token: string;
-    email: string;
-    emailVerified: boolean;
     userId: string;
   };
 }
 
 const SettingPanel = ({ app }: ISettingPanel) => {
   const [appName, setAppName] = useState(app.name);
-  const { mutate } = api.app.delete.useMutation();
+  const { mutate: deleteapp } = api.app.delete.useMutation();
+  const { mutate: saveapp } = api.app.update.useMutation();
 
   const router = useRouter();
 
   const deleteApp = () => {
-    mutate({ id: app.id, userId: app.userId });
+    deleteapp({ id: app.id, userId: app.userId });
     void router.push({ pathname: '/' });
+  };
+
+  const saveApp = () => {
+    if (app.name === appName) return;
+    saveapp({ id: app.id, data: { name: appName } });
   };
 
   return (
@@ -138,7 +142,7 @@ const SettingPanel = ({ app }: ISettingPanel) => {
             </CardDescription>
           </div>
           <div className="">
-            <Button>Save</Button>
+            <Button onClick={saveApp}>Save</Button>
           </div>
         </div>
       </CardHeader>
@@ -148,9 +152,7 @@ const SettingPanel = ({ app }: ISettingPanel) => {
           type="text"
           label="App Name"
           value={appName}
-          onChange={e =>
-            console.log(e.target.value, setAppName(e.target.value))
-          }
+          onChange={e => setAppName(e.target.value)}
         />
         <InputField
           id="updatedAt"
@@ -158,14 +160,6 @@ const SettingPanel = ({ app }: ISettingPanel) => {
           label="Update At"
           value={'2023-09-14'}
           className="disabled:opacity-1"
-          disabled
-        />
-        <InputField
-          id="senderEmail"
-          type="email"
-          label="Sender's Name"
-          value={app.email}
-          className="disabled:opacity-90"
           disabled
         />
 
