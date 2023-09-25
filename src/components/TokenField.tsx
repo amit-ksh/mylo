@@ -12,7 +12,9 @@ interface ITokenField {
 export default function TokenField({ id, label, value }: ITokenField) {
   return (
     <div className="space-y-1">
-      <Label htmlFor="new">{label}</Label>
+      <Label htmlFor="new" className="text-sm font-medium">
+        {label}
+      </Label>
       <div className="relative">
         <Input id={id} type="password" value="•••••••••••••••••••••" disabled />
         <Button

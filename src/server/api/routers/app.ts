@@ -14,6 +14,7 @@ export const appRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const payload = {
         name: input.name,
+        url: input.url,
         userId: input.userId,
       };
       const token = jwt.sign(payload, env.JWT_SECRET);
@@ -27,11 +28,13 @@ export const appRouter = createTRPCRouter({
           select: {
             id: true,
             name: true,
+            url: true,
             user: { select: { email: true } },
           },
         })
         .then(app => {
           if (!app.user.email) return;
+
           void createNewUserMail(app.user.email, app.name)
             .send()
             .then(message => {
@@ -50,7 +53,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().nonempty(),
-        data: z.object({ name: z.string() }),
+        data: z.object({ name: z.string(), url: z.string() }),
       }),
     )
     .mutation(async ({ ctx, input }) => {

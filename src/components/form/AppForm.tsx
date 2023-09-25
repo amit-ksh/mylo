@@ -22,7 +22,9 @@ import { appCreateSchema } from '@/schemas/app';
 import { useSession } from 'next-auth/react';
 import { useModal } from '@/hooks/useModal';
 
-const formSchema = appCreateSchema.pick({ name: true });
+const formSchema = appCreateSchema.pick({ name: true, url: true });
+
+const APP_URL = 'https://mylo.app/subscribe/';
 
 export default function CreateAppForm({ id }: { id: string }) {
   const { mutate } = api.app.create.useMutation();
@@ -32,7 +34,7 @@ export default function CreateAppForm({ id }: { id: string }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: '' },
+    defaultValues: { name: '', url: '' },
   });
 
   const { close } = useModal(id);
@@ -66,6 +68,32 @@ export default function CreateAppForm({ id }: { id: string }) {
               <FormDescription>Enter a unique app name.</FormDescription>
               <FormControl>
                 <Input placeholder="app-name" required {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL</FormLabel>
+              <FormDescription>
+                Enter a url for subscriber to subscribe.
+              </FormDescription>
+              <FormControl>
+                <div className="flex items-center">
+                  <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
+                    {APP_URL}
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="my-newsletter"
+                    required
+                    {...field}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

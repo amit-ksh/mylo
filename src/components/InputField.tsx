@@ -9,7 +9,9 @@ interface IInputField extends InputProps {
 export default function InputField({ id, label, ...props }: IInputField) {
   return (
     <div className="space-y-1">
-      <Label htmlFor="current">{label}</Label>
+      <Label htmlFor="current" className="text-sm font-medium">
+        {label}
+      </Label>
       <Input id={id} {...props} />
     </div>
   );
