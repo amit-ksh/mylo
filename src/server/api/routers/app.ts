@@ -99,24 +99,6 @@ export const appRouter = createTRPCRouter({
         },
       });
     }),
-  verify: publicProcedure.input(z.string()).mutation(({ ctx, input }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const id = jwt.decode(input) as string;
-    try {
-      void ctx.prisma.app.update({
-        where: { id },
-        data: {
-          emailVerified: true,
-        },
-      });
-    } catch (error) {
-      return 'Invalid verification link.';
-    }
-
-    return {
-      id,
-    };
-  }),
 });
 
 export const appCaller = appRouter.createCaller({ session: null, prisma });
