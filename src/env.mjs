@@ -29,6 +29,9 @@ export const env = createEnv({
     NYLAS_CLIENT_SECRET: z.string(),
     NYLAS_ACCESS_TOKEN: z.string(),
     JWT_SECRET: z.string(),
+    AZURE_AI_TRANSLATOR_APIKEY: z.string(),
+    AZURE_AI_TRANSLATOR_ENDPOINT: z.string(),
+    AZURE_AI_TRANSLATOR_REGION: z.string(),
   },
 
   /**
@@ -57,6 +60,9 @@ export const env = createEnv({
     NYLAS_CLIENT_SECRET: process.env.NYLAS_CLIENT_SECRET,
     NYLAS_ACCESS_TOKEN: process.env.NYLAS_ACCESS_TOKEN,
     JWT_SECRET: process.env.JWT_SECRET,
+    AZURE_AI_TRANSLATOR_APIKEY: process.env.AZURE_AI_TRANSLATOR_APIKEY,
+    AZURE_AI_TRANSLATOR_ENDPOINT: process.env.AZURE_AI_TRANSLATOR_ENDPOINT,
+    AZURE_AI_TRANSLATOR_REGION: process.env.AZURE_AI_TRANSLATOR_REGION,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

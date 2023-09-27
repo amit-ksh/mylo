@@ -24,3 +24,19 @@ export type Languages = Record<
     dir: 'ltr' | 'rtl';
   }
 >;
+
+export type TranslationApiResponse = Array<{
+  translations: Array<{
+    text: string;
+    to: string;
+    alignment: { proj: string };
+  }>;
+}>;
+
+export type TranslationResponse = Record<
+  string,
+  {
+    subject?: string;
+    content?: string;
+  }
+>;

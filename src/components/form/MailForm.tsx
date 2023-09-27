@@ -14,28 +14,21 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
 import { Textarea } from '@/components/ui/textarea';
 
 import { api } from '@/utils/api';
 import { mailSchema } from '@/schemas/mail';
 import { useModal } from '@/hooks/useModal';
 import SelectLanguage from '../SelectLanguage';
+import { useSession } from 'next-auth/react';
 
 const formSchema = mailSchema.omit({ mailId: true });
 
 export default function MailForm({ id, appId }: { id: string; appId: string }) {
-  const { mutate } = api.mail.send.useMutation();
+  const { mutate: sendMail } = api.mail.send.useMutation();
   const { data: languages } = api.translator.languages.useQuery();
-
-  console.log(languages);
+  const { data: userSession } = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,8 +42,9 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
     e?: BaseSyntheticEvent,
   ) {
     e?.preventDefault();
+    if (!userSession?.user.email) return;
 
-    mutate(values);
+    sendMail({ ...values, userEmail: userSession.user.email });
 
     close();
   }
