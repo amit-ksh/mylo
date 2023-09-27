@@ -15,3 +15,12 @@ export interface IRegister extends ILogin {
 export interface IUserName {
   userName: string;
 }
+
+export type Languages = Record<
+  string,
+  {
+    name: string;
+    nativeName: string;
+    dir: 'ltr' | 'rtl';
+  }
+>;

@@ -27,17 +27,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/utils/api';
 import { mailSchema } from '@/schemas/mail';
 import { useModal } from '@/hooks/useModal';
+import SelectLanguage from '../SelectLanguage';
 
 const formSchema = mailSchema.omit({ mailId: true });
 
-const languages = ['english', 'hindi', 'french', 'spanish'];
-
 export default function MailForm({ id, appId }: { id: string; appId: string }) {
   const { mutate } = api.mail.send.useMutation();
+  const { data: languages } = api.translator.languages.useQuery();
+
+  console.log(languages);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { content: '', subject: '', language: languages[0], appId },
+    defaultValues: { content: '', subject: '', language: 'en', appId },
   });
 
   const { close } = useModal(id);
@@ -68,28 +70,13 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
             <FormItem>
               <FormLabel>Language</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {languages.map(lang => (
-                        <SelectItem
-                          key={lang}
-                          value={lang}
-                          className="capitalize"
-                        >
-                          {lang}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                {languages && (
+                  <SelectLanguage
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                    languages={languages}
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>

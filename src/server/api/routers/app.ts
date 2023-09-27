@@ -91,7 +91,14 @@ export const appRouter = createTRPCRouter({
     }),
 
   get: publicProcedure
-    .input(z.object({ userId: z.string(), name: z.string() }))
+    .input(
+      z.object({
+        userId: z.string().optional(),
+        name: z.string().optional(),
+        id: z.string().optional(),
+        url: z.string().optional(),
+      }),
+    )
     .query(({ ctx, input }) => {
       return ctx.prisma.app.findFirst({
         where: input,
