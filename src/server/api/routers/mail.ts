@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
-import { Draft, nylas } from '@/lib/nylas';
+import { sendMail } from '@/lib/nylas';
 import { tanslatorCaller } from './translator';
 
 export const mailRouter = createTRPCRouter({
@@ -28,58 +28,69 @@ export const mailRouter = createTRPCRouter({
           },
         }),
       ]);
-      const languages = new Set(subscribedLanguages.map(l => l.language)).add(
-        input.language,
-      );
-
+      const languages = new Set(subscribedLanguages.map(l => l.language));
       const translatedMail = await tanslatorCaller.translate({
         ...input,
         languages: Array.from(languages),
       });
 
+      // Send a copy to sender
+      translatedMail[input.language] = {
+        subject: input.subject,
+        content: input.content,
+      };
+      const subscribersWithSenderEmail = [
+        { email: input.userEmail, language: input.language },
+      ].concat(subscribers);
       const batchId = crypto.randomUUID();
-      subscribers.forEach(subscriber => {
-        const draft = new Draft(nylas, {
-          subject: translatedMail[subscriber.language]?.subject,
-          body: translatedMail[subscriber.language]?.content,
-          to: [{ email: subscriber.email }],
-        });
+      subscribersWithSenderEmail.forEach(subscriber => {
+        void sendMail(
+          translatedMail[subscriber.language]?.subject,
+          translatedMail[subscriber.language]?.content,
+          subscriber.email,
+        ).then(async message => {
+          const sentMail = await ctx.prisma.mail.create({
+            data: {
+              language: subscriber.language,
+              batchId,
+              subject: translatedMail[subscriber.language]?.subject ?? '',
+              mailId: message.id ?? '',
+              appId: input.appId,
+            },
+          });
 
-        void draft.send().then(message => {
-          void ctx.prisma.mail
-            .create({
-              data: {
-                language: subscriber.language,
-                batchId,
-                mailId: message.id ?? '',
-                appId: input.appId,
-              },
-            })
-            .then(({ id }) => {
-              console.log(id);
-            });
+          console.log(
+            `${sentMail.batchId} (${sentMail.language}) is sent successfully.`,
+          );
         });
       });
 
       return batchId;
     }),
+
   getAll: publicProcedure
     .input(z.object({ appId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.mail.findMany({
+      const batches = await ctx.prisma.mail.findMany({
         where: input,
-        distinct: 'batchId',
-        include: {
-          app: {
-            select: {
-              _count: {
-                select: {
-                  mails: true,
-                },
-              },
-            },
-          },
+        select: {
+          batchId: true,
+          createdAt: true,
+          language: true,
+          subject: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
         },
       });
+
+      return batches.reduce((acc: Record<string, typeof batches>, cur) => {
+        if (!acc.hasOwnProperty(cur.batchId)) {
+          acc[cur.batchId] = [cur];
+        }
+        acc[cur.batchId]!.push(cur);
+
+        return acc;
+      }, {});
     }),
 });

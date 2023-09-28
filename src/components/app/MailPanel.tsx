@@ -11,9 +11,10 @@ import {
 import CreateModal from '@/components/CreateModal';
 import MailForm from '@/components/form/MailForm';
 import { api } from '@/utils/api';
+import { isObjectEmpty } from '@/lib/utils';
 
 export function MailPanel({ appId }: { appId: string }) {
-  const { data: mails } = api.mail.getAll.useQuery({ appId });
+  const { data: mailBatch, isLoading } = api.mail.getAll.useQuery({ appId });
 
   return (
     <div>
@@ -29,19 +30,27 @@ export function MailPanel({ appId }: { appId: string }) {
         <TableCaption>List of mails send by you.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="">ID</TableHead>
+            <TableHead className="">S. No.</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead className="">Total Mails Send</TableHead>
+            <TableHead className="">Subject</TableHead>
+            <TableHead className="">Total Mails Sent</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="">
-          {mails?.map(mail => (
-            <TableRow key={mail.batchId}>
-              <TableCell className="font-medium">{mail.batchId}</TableCell>
-              <TableCell className="">{mail.createdAt.toUTCString()}</TableCell>
-              <TableCell className="">{mail.app._count.mails}</TableCell>
-            </TableRow>
-          ))}
+        <TableBody>
+          {isLoading && 'Loading...'}
+          {!isLoading && isObjectEmpty(mailBatch!) && '0 mails sent'}
+          {!isLoading &&
+            !isObjectEmpty(mailBatch!) &&
+            Object.values(mailBatch!)?.map((mails, idx) => (
+              <TableRow key={mails[0]!.batchId}>
+                <TableCell className="font-medium">{idx + 1}</TableCell>
+                <TableCell className="">
+                  {mails[0]!.createdAt.toUTCString()}
+                </TableCell>
+                <TableCell className="">{mails[0]!.subject}</TableCell>
+                <TableCell className="">{mails.length}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
