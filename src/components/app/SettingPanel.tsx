@@ -1,3 +1,5 @@
+'use client';
+
 import type { BaseSyntheticEvent } from 'react';
 import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -12,7 +14,6 @@ import {
 
 import DangerModal from '@/components/DangerModal';
 import TokenField from '@/components/TokenField';
-import InputField from '@/components/InputField';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -27,10 +28,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { ArrowTopRightIcon } from '@radix-ui/react-icons';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
-
-const APP_URL = 'https://mylo.app/subscribe/';
 
 interface ISettingPanel {
   app: {
@@ -111,7 +111,7 @@ export function SettingPanel({ app }: ISettingPanel) {
                   <FormControl>
                     <div className="flex items-center">
                       <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                        {APP_URL}
+                        {window.origin}/
                       </div>
                       <Input
                         type="text"
@@ -119,6 +119,9 @@ export function SettingPanel({ app }: ISettingPanel) {
                         required
                         {...field}
                       />
+                      <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
+                        /subscribe
+                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -127,14 +130,32 @@ export function SettingPanel({ app }: ISettingPanel) {
             />
           </form>
         </Form>
-        <InputField
-          id="updatedAt"
-          type="date"
-          label="Update At"
-          value={'2023-09-14'}
-          className="disabled:opacity-1"
-          disabled
-        />
+        <div className="flex items-center gap-2">
+          <h4 className="font-semibold">Subscribe URL:</h4>
+          <a
+            className="text-sm font-medium hover:text-gray-600"
+            href={`${window.origin}/${app.url}/subscribe`}
+            target="_blank"
+          >
+            {`${window.origin}/${app.url}/subscribe`}
+            <span className="inline-block">
+              <ArrowTopRightIcon />
+            </span>
+          </a>
+        </div>
+        <div className="flex items-center gap-2">
+          <h4 className="font-semibold">Unsubscribe URL:</h4>
+          <a
+            className="text-sm font-medium hover:text-gray-600"
+            href={`${window.origin}/${app.url}/unsubscribe`}
+            target="_blank"
+          >
+            {`${window.origin}/${app.url}/unsubscribe`}
+            <span className="inline-block">
+              <ArrowTopRightIcon />
+            </span>
+          </a>
+        </div>
         <TokenField id="appId" label="App ID" value={app.id} />
         <TokenField id="token" label="Token" value={app.token} />
       </CardContent>

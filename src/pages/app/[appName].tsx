@@ -30,7 +30,7 @@ export default function AppPage() {
   return (
     <MainLayout>
       <div className="m-4 ">
-        <Tabs defaultValue="setting">
+        <Tabs defaultValue="mails">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="mails">Mails</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>

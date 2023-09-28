@@ -1,3 +1,5 @@
+'use client';
+
 import { type BaseSyntheticEvent } from 'react';
 import { type z } from 'zod';
 
@@ -23,8 +25,6 @@ import { useSession } from 'next-auth/react';
 import { useModal } from '@/hooks/useModal';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
-
-const APP_URL = 'https://mylo.app/subscribe/';
 
 export default function CreateAppForm({ id }: { id: string }) {
   const { mutate } = api.app.create.useMutation();
@@ -85,7 +85,7 @@ export default function CreateAppForm({ id }: { id: string }) {
               <FormControl>
                 <div className="flex items-center">
                   <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                    {APP_URL}
+                    {window.origin}/
                   </div>
                   <Input
                     type="text"
@@ -93,6 +93,9 @@ export default function CreateAppForm({ id }: { id: string }) {
                     required
                     {...field}
                   />
+                  <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
+                    /subscribe
+                  </div>
                 </div>
               </FormControl>
               <FormMessage />
