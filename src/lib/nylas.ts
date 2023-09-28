@@ -26,4 +26,4 @@ const sendMail = (
   return draft.send();
 };
 
-export { sendMail };
+export { nylas, Draft, sendMail };

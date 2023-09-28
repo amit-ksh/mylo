@@ -9,7 +9,7 @@ import { isAutheticated } from '@/lib/protected';
 import { api } from '@/utils/api';
 import { useSession } from 'next-auth/react';
 
-import { MailPanel, SettingPanel } from '@/components/app';
+import { MailPanel, SettingPanel, StatisticsPanel } from '@/components/app';
 import { Icons } from '@/components/ui/icons';
 
 export default function AppPage() {
@@ -33,13 +33,17 @@ export default function AppPage() {
         <Tabs defaultValue="mails">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="mails">Mails</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="statistics">
+              <TabsTrigger value="statistics">Statistics</TabsTrigger>
+            </TabsTrigger>
             <TabsTrigger value="setting">Setting</TabsTrigger>
           </TabsList>
           <TabsContent value="mails">
             <MailPanel appId={appId} />
           </TabsContent>
-          <TabsContent value="analytics">Analytics</TabsContent>
+          <TabsContent value="statistics">
+            <StatisticsPanel appId={appId} />
+          </TabsContent>
           <TabsContent value="setting" className="mx-auto">
             {!isLoading && isError && (
               <div className="flex h-[80vh] items-center justify-center">

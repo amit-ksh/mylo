@@ -28,7 +28,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ArrowTopRightIcon } from '@radix-ui/react-icons';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
 
@@ -130,32 +129,7 @@ export function SettingPanel({ app }: ISettingPanel) {
             />
           </form>
         </Form>
-        <div className="flex items-center gap-2">
-          <h4 className="font-semibold">Subscribe URL:</h4>
-          <a
-            className="text-sm font-medium hover:text-gray-600"
-            href={`${window.origin}/${app.url}/subscribe`}
-            target="_blank"
-          >
-            {`${window.origin}/${app.url}/subscribe`}
-            <span className="inline-block">
-              <ArrowTopRightIcon />
-            </span>
-          </a>
-        </div>
-        <div className="flex items-center gap-2">
-          <h4 className="font-semibold">Unsubscribe URL:</h4>
-          <a
-            className="text-sm font-medium hover:text-gray-600"
-            href={`${window.origin}/${app.url}/unsubscribe`}
-            target="_blank"
-          >
-            {`${window.origin}/${app.url}/unsubscribe`}
-            <span className="inline-block">
-              <ArrowTopRightIcon />
-            </span>
-          </a>
-        </div>
+
         <TokenField id="appId" label="App ID" value={app.id} />
         <TokenField id="token" label="Token" value={app.token} />
       </CardContent>
