@@ -10,7 +10,7 @@ import {
 
 interface ISelectLanguage {
   languages: Languages;
-  onChange: () => void;
+  onChange: (value: string) => void;
   defaultValue: string;
 }
 
@@ -28,8 +28,8 @@ export default function SelectLanguage({
         <SelectGroup>
           {Object.keys(languages).map(lang => (
             <SelectItem key={lang} value={lang} className="capitalize">
-              <span>{languages[lang]['name']}</span>{' '}
-              <span>{languages[lang]['nativeName']}</span>
+              <span>{languages[lang]!.name} </span>(
+              <span>{languages[lang]!.nativeName}</span>)
             </SelectItem>
           ))}
         </SelectGroup>

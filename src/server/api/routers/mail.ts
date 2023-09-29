@@ -1,7 +1,8 @@
 import * as z from 'zod';
+import type { MailBatch } from '@/types';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
-import { sendMail } from '@/lib/nylas';
+import { nylas, sendMail } from '@/lib/nylas';
 import { tanslatorCaller } from './translator';
 
 export const mailRouter = createTRPCRouter({
@@ -78,19 +79,25 @@ export const mailRouter = createTRPCRouter({
           createdAt: true,
           language: true,
           subject: true,
+          mailId: true,
         },
         orderBy: {
           createdAt: 'asc',
         },
       });
 
-      return batches.reduce((acc: Record<string, typeof batches>, cur) => {
-        if (!acc.hasOwnProperty(cur.batchId)) {
-          acc[cur.batchId] = [cur];
-        }
-        acc[cur.batchId]!.push(cur);
+      const response: Record<string, MailBatch[]> = {};
 
-        return acc;
-      }, {});
+      for (const batch of batches) {
+        const mail = await nylas.messages.find(batch.mailId);
+
+        if (!response.hasOwnProperty(batch.batchId)) {
+          response[batch.batchId] = [{ ...batch, content: mail.body }];
+        } else {
+          response[batch.batchId]!.push({ ...batch, content: mail.body });
+        }
+      }
+
+      return response;
     }),
 });

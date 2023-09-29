@@ -20,8 +20,8 @@ export type Languages = Record<
   string,
   {
     name: string;
-    nativeName: string;
-    dir: 'ltr' | 'rtl';
+    nativeName?: string;
+    dir?: 'ltr' | 'rtl';
   }
 >;
 
@@ -40,3 +40,12 @@ export type TranslationResponse = Record<
     content?: string;
   }
 >;
+
+export type MailBatch = {
+  mailId: string;
+  language: string;
+  subject: string;
+  createdAt: Date;
+  batchId: string;
+  content: string | undefined;
+};
