@@ -20,7 +20,7 @@ export function MailPanel({ appId }: { appId: string }) {
     <div>
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-semibold">Mails</h2>
-        <div className="max-w-lg">
+        <div className="">
           <CreateModal id="mail-form" title="Send Mail">
             <MailForm id="mail-form" appId={appId} />
           </CreateModal>
@@ -30,10 +30,10 @@ export function MailPanel({ appId }: { appId: string }) {
         <TableCaption>List of mails send by you.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="">S. No.</TableHead>
+            <TableHead>S. No.</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead className="">Subject</TableHead>
-            <TableHead className="">Total Mails Sent</TableHead>
+            <TableHead>Subject</TableHead>
+            <TableHead>Total Mails Sent</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
