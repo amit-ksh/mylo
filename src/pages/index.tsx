@@ -2,7 +2,7 @@ import type { GetServerSidePropsContext, Metadata } from 'next';
 import Link from 'next/link';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import CreateModal from '@/components/CreateModal';
+import { CreateModal } from '@/components/modals/CreateModal';
 import MainLayout from '@/components/layouts/MainLayout';
 import AppForm from '@/components/form/AppForm';
 import { isAutheticated } from '@/lib/protected';

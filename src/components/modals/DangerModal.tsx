@@ -8,9 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
-import { Button } from './ui/button';
-import InputField from './InputField';
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import InputField from '@/components/InputField';
 
 const ConfirmationText = ({ text }: { text: string }) => (
   <span>
@@ -23,7 +23,7 @@ interface IDeleteModal {
   onConfirm: () => void;
 }
 
-export default function DangerModal({
+export function DangerModal({
   children,
   onConfirm,
   confirmationText,

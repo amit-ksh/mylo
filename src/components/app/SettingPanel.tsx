@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import DangerModal from '@/components/DangerModal';
+import { DangerModal } from '@/components/modals';
 import TokenField from '@/components/TokenField';
 import { api } from '@/utils/api';
 import { useRouter } from 'next/router';

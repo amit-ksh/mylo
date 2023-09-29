@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { useModal } from '@/hooks/useModal';
 
-export default function CreateModal({
+export function CreateModal({
   id,
   title,
   children,

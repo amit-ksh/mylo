@@ -1,6 +1,6 @@
 import type { GetServerSidePropsContext } from 'next';
 
-import DeleteModal from '@/components/DangerModal';
+import { DangerModal } from '@/components/modals';
 import InputField from '@/components/InputField';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -80,12 +80,12 @@ export default function Setting() {
           />
         </CardContent>
         <CardFooter className="flex items-center justify-end">
-          <DeleteModal
+          <DangerModal
             confirmationText={user?.email ?? ''}
             onConfirm={deleteUser}
           >
             Delete Account
-          </DeleteModal>
+          </DangerModal>
         </CardFooter>
       </Card>
     </MainLayout>
