@@ -10,7 +10,7 @@ import { createNewUserMail } from '@/lib/templates';
 
 export const appRouter = createTRPCRouter({
   create: publicProcedure
-    .input(appCreateSchema.omit({ email: true }))
+    .input(appCreateSchema.omit({ email: true, accessToken: true }))
     .mutation(async ({ ctx, input }) => {
       const payload = {
         name: input.name,
@@ -35,13 +35,21 @@ export const appRouter = createTRPCRouter({
         .then(app => {
           if (!app.user.email) return;
 
-          void createNewUserMail(app.user.email, app.name)
+          void createNewUserMail(
+            app.user.email,
+            app.name,
+            new URL(`https://mylo.vercel.app/${app.url}`).href,
+          )
             .send()
             .then(message => {
               console.log(`${message.id} was sent`);
             });
+
+          return app.id;
         })
-        .catch(() => {
+        .catch(e => {
+          console.log(e);
+
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'Server Error!',
@@ -53,7 +61,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().nonempty(),
-        data: z.object({ name: z.string(), url: z.string() }),
+        data: appCreateSchema.omit({ userId: true }).partial(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

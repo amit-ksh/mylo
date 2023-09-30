@@ -1,5 +1,5 @@
 import { api } from '@/utils/api';
-import { ArrowTopRightIcon } from '@radix-ui/react-icons';
+import { ArrowTopRightIcon, CheckCircledIcon } from '@radix-ui/react-icons';
 import {
   Table,
   TableBody,
@@ -7,6 +7,7 @@ import {
   TableCell,
   TableRow,
 } from '../ui/table';
+import { GConnectButton } from '@/components/ConnectButton';
 
 const Link = ({ url }: { url: string }) => (
   <a
@@ -27,7 +28,7 @@ export function StatisticsPanel({ appId }: { appId: string }) {
   return (
     <div>
       <Table className="my-2 min-w-[500px] overflow-x-auto">
-        <TableCaption>Your app Stats.</TableCaption>
+        <TableCaption>Your App Stats.</TableCaption>
         <TableBody>
           <TableRow>
             <TableCell className="first-of-type:font-medium">
@@ -39,13 +40,25 @@ export function StatisticsPanel({ appId }: { appId: string }) {
             <TableCell className="first-of-type:font-medium">
               Created At
             </TableCell>
-            <TableCell>{app?.name ?? ''}</TableCell>
+            <TableCell>{app?.createdAt.toUTCString()}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="first-of-type:font-medium">
               Last Updated
             </TableCell>
-            <TableCell>{app?.createdAt.toUTCString() ?? ''}</TableCell>
+            <TableCell>{app?.createdAt.toUTCString()}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="first-of-type:font-medium">Email</TableCell>
+            <TableCell>
+              {!app?.email ? (
+                <GConnectButton appId={app?.id ?? ''} />
+              ) : (
+                <p className="flex items-center gap-2 font-medium italic text-green-600">
+                  {app.email} <CheckCircledIcon />
+                </p>
+              )}
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="first-of-type:font-medium">

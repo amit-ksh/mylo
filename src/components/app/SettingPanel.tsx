@@ -28,6 +28,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { GConnectButton } from '@/components/ConnectButton';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
 
@@ -36,6 +38,7 @@ interface ISettingPanel {
     id: string;
     createdAt: Date;
     updatedAt: Date;
+    email: string | null;
     name: string;
     token: string;
     url: string;
@@ -129,6 +132,20 @@ export function SettingPanel({ app }: ISettingPanel) {
             />
           </form>
         </Form>
+
+        {!app.email ? (
+          <div className="flex items-center gap-4">
+            <p>Email: </p>
+            <GConnectButton appId={app.id} />
+          </div>
+        ) : (
+          <p className="my-8 font-medium">
+            Email:{' '}
+            <span className="flex items-center gap-2 italic text-green-600">
+              {app.email} <CheckCircledIcon />
+            </span>
+          </p>
+        )}
 
         <TokenField id="appId" label="App ID" value={app.id} />
         <TokenField id="token" label="Token" value={app.token} />

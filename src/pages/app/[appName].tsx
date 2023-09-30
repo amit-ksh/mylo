@@ -29,17 +29,15 @@ export default function AppPage() {
 
   return (
     <MainLayout>
-      <div className="m-4 ">
+      <div className="m-4">
         <Tabs defaultValue="mails">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="mails">Mails</TabsTrigger>
-            <TabsTrigger value="statistics">
-              <TabsTrigger value="statistics">Statistics</TabsTrigger>
-            </TabsTrigger>
+            <TabsTrigger value="statistics">Statistics</TabsTrigger>
             <TabsTrigger value="setting">Setting</TabsTrigger>
           </TabsList>
           <TabsContent value="mails">
-            <MailPanel appId={appId} />
+            <MailPanel appId={appId} appEmail={app?.email} />
           </TabsContent>
           <TabsContent value="statistics">
             <StatisticsPanel appId={appId} />

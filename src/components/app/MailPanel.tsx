@@ -13,8 +13,15 @@ import MailForm from '@/components/form/MailForm';
 import { api } from '@/utils/api';
 import { isObjectEmpty } from '@/lib/utils';
 import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
+import { GConnectButton } from '@/components/ConnectButton';
 
-export function MailPanel({ appId }: { appId: string }) {
+export function MailPanel({
+  appId,
+  appEmail,
+}: {
+  appId: string;
+  appEmail?: string | null;
+}) {
   const { data: mailBatch, isLoading } = api.mail.getAll.useQuery({ appId });
 
   return (
@@ -22,9 +29,13 @@ export function MailPanel({ appId }: { appId: string }) {
       <div className="m-4 flex items-center gap-4">
         <h2 className="text-2xl font-semibold">Mails</h2>
         <div className="">
-          <CreateModal id="mail-form" title="Send Mail">
-            <MailForm id="mail-form" appId={appId} />
-          </CreateModal>
+          {!appEmail ? (
+            <GConnectButton appId={appId} />
+          ) : (
+            <CreateModal id="mail-form" title="Send Mail">
+              <MailForm id="mail-form" appId={appId} />
+            </CreateModal>
+          )}
         </div>
       </div>
       <Table className="my-2 min-w-[500px] overflow-x-auto">

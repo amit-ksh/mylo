@@ -46,7 +46,7 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
     e?.preventDefault();
     if (!userSession?.user.email) return;
 
-    sendMail({ ...values, userEmail: userSession.user.email });
+    sendMail({ ...values });
 
     close();
   }

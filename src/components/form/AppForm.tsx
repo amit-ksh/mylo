@@ -22,12 +22,12 @@ import {
 import { api } from '@/utils/api';
 import { appCreateSchema } from '@/schemas/app';
 import { useSession } from 'next-auth/react';
-import { useModal } from '@/hooks/useModal';
+import ConnectButton from '../ConnectButton';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
 
 export default function CreateAppForm({ id }: { id: string }) {
-  const { mutate } = api.app.create.useMutation();
+  const { mutate: createApp, data: app } = api.app.create.useMutation();
   const { data: sessionData } = useSession();
 
   const userId = sessionData?.user.id ?? '';
@@ -37,8 +37,6 @@ export default function CreateAppForm({ id }: { id: string }) {
     defaultValues: { name: '', url: '' },
   });
 
-  const { close } = useModal(id);
-
   function onSubmit(
     values: z.infer<typeof formSchema>,
     e?: BaseSyntheticEvent,
@@ -47,12 +45,10 @@ export default function CreateAppForm({ id }: { id: string }) {
     if (!sessionData?.user)
       form.setError('root', { message: 'User not found' });
 
-    mutate({ ...values, userId });
-
-    close();
+    createApp({ ...values, userId });
   }
 
-  return (
+  return !app ? (
     <Form {...form}>
       <form
         id={id}
@@ -107,5 +103,7 @@ export default function CreateAppForm({ id }: { id: string }) {
         </Button>
       </form>
     </Form>
+  ) : (
+    <ConnectButton appId={app} />
   );
 }

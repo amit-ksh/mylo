@@ -76,10 +76,10 @@ model App {
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt @default(now())
     name            String
-    token           String    @unique
     url             String    @unique
+    token           String    @unique
+    accessToken     String?    
     email           String?
-    emailVerified   Boolean   @default(false)
     userId          String
     subscriber      Subscriber[]
     mails           Mail[]

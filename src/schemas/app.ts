@@ -16,4 +16,5 @@ export const appCreateSchema = z.object({
     .regex(/^[\w-]+$/, 'Please enter a valid URL route.'),
   email: z.string().email().nonempty(),
   userId: z.string().nonempty(),
+  accessToken: z.string().nonempty(),
 });

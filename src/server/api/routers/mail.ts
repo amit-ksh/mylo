@@ -2,18 +2,16 @@ import * as z from 'zod';
 import type { MailBatch } from '@/types';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
-import { nylas, sendMail } from '@/lib/nylas';
+import { nylas } from '@/lib/nylas';
 import { tanslatorCaller } from './translator';
+import { sendMail } from '@/lib/templates';
+import { TRPCClientError } from '@trpc/client';
 
 export const mailRouter = createTRPCRouter({
   send: publicProcedure
-    .input(
-      mailSchema
-        .omit({ mailId: true })
-        .extend({ userEmail: z.string().email() }),
-    )
+    .input(mailSchema.omit({ mailId: true }))
     .mutation(async ({ ctx, input }) => {
-      const [subscribedLanguages, subscribers] = await Promise.all([
+      const [subscribedLanguages, subscribers, app] = await Promise.all([
         ctx.prisma.subscriber.findMany({
           select: { language: true },
           where: { appId: input.appId },
@@ -28,27 +26,35 @@ export const mailRouter = createTRPCRouter({
             language: 'asc',
           },
         }),
+        ctx.prisma.app.findUnique({ where: { id: input.appId } }),
       ]);
+
+      if (!app?.email)
+        return new TRPCClientError(
+          'No email is connected to your app. Please an email first.',
+        );
+
       const languages = new Set(subscribedLanguages.map(l => l.language));
       const translatedMail = await tanslatorCaller.translate({
         ...input,
         languages: Array.from(languages),
       });
 
-      // Send a copy to sender
+      // For sending a copy to sender
       translatedMail[input.language] = {
         subject: input.subject,
         content: input.content,
       };
-      const subscribersWithSenderEmail = [
-        { email: input.userEmail, language: input.language },
-      ].concat(subscribers);
+      subscribers.push({ email: app.email, language: input.language });
       const batchId = crypto.randomUUID();
-      subscribersWithSenderEmail.forEach(subscriber => {
+
+      subscribers.forEach(subscriber => {
         void sendMail(
+          app.email!,
+          subscriber.email,
+          app.name,
           translatedMail[subscriber.language]?.subject,
           translatedMail[subscriber.language]?.content,
-          subscriber.email,
         ).then(async message => {
           const sentMail = await ctx.prisma.mail.create({
             data: {
@@ -82,7 +88,7 @@ export const mailRouter = createTRPCRouter({
           mailId: true,
         },
         orderBy: {
-          createdAt: 'asc',
+          createdAt: 'desc',
         },
       });
 
