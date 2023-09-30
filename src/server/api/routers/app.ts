@@ -38,7 +38,7 @@ export const appRouter = createTRPCRouter({
           void createNewUserMail(
             app.user.email,
             app.name,
-            new URL(`https://mylo.vercel.app/${app.url}`).href,
+            new URL(`${env.NEXTAUTH_URL}/${app.url}`).href,
           )
             .send()
             .then(message => {

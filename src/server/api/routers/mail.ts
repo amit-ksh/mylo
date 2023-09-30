@@ -98,7 +98,9 @@ export const mailRouter = createTRPCRouter({
         const mail = await nylas.messages.find(batch.mailId);
 
         if (!response.hasOwnProperty(batch.batchId)) {
-          response[batch.batchId] = [{ ...batch, content: mail.body }];
+          response[batch.batchId] = [
+            { ...batch, content: mail.body, subject: mail.subject! },
+          ];
         } else {
           response[batch.batchId]!.push({ ...batch, content: mail.body });
         }

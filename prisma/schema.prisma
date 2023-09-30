@@ -93,7 +93,6 @@ model Mail {
     createdAt    DateTime   @default(now())
     mailId       String     // Original Mail ID
     batchId      String     // Represent the whole mail batch
-    subject      String
     language     String
     appId        String
     app          App       @relation(fields: [appId], references: [id], onDelete: Cascade)
