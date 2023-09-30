@@ -1,28 +1,46 @@
-# Create T3 App
+# Mylo App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+**Mylo is an AI-powered web application that provides newsletter service to individuals and businesses to start their newsletter for their users or customers.**
 
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Tech Stack Used
 
 - [Next.js](https://nextjs.org)
+- [Nylas](https://www.nylas.com/)
+- [MS Azure Translate](https://learn.microsoft.com/en-us/azure/ai-services/translator/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
-## Learn More
+## Setting the local environment
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+1. Clone the repo and install the dependencies
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+   ```bash
+   git clone https://github.com/amit-ksh/mylo.git
+   cd mylo
+   npm install
+   ```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+1. Rename the `.env.example` to `.env` and fill up all the variables
 
-## How do I deploy this?
+1. Getting all the credentials (_Follow the guide_)
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   - Github: [Guide](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
+   - Google: [Guide](https://support.google.com/cloud/answer/6158849?hl=en)
+     1. Once you created the credentials for your GCP app then, add the following:
+        - Authorised JavaScript origins (Add URI): http://localhost:3000
+        - Authorised redirect URIs (Add URI):
+          - http://localhost:3000/api/oauth/connect/
+          - http://localhost:3000/api/auth/callback/google
+   - Azure AI: [Guide](https://learn.microsoft.com/en-us/azure/ai-services/translator/translator-text-apis?tabs=nodejs)
+   - Nylas: [Guide](https://developer.nylas.com/docs/the-basics/quickstart/#step-2-run-the-sample-api-request)
+
+1. Create the DB tables: `npx prisma migrate dev`
+
+1. Run the development server:
+
+   ```bash
+   npm run dev
+   ```

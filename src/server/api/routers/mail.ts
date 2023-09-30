@@ -63,7 +63,6 @@ export const mailRouter = createTRPCRouter({
             data: {
               language: subscriber.language,
               batchId,
-              subject: translatedMail[subscriber.language]?.subject ?? '',
               mailId: message.id ?? '',
               appId: input.appId,
             },
