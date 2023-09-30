@@ -8,6 +8,7 @@ import AppForm from '@/components/form/AppForm';
 import { isAutheticated } from '@/lib/protected';
 import { useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
+import Loader from '@/components/Loader';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -48,7 +49,11 @@ function AppCard({ name, createdAt, totalSubscribers, totalMails }: IAppCard) {
 
 export default function DashboardPage() {
   const { data: sessionData } = useSession();
-  const { data: apps } = api.app.getAll.useQuery({
+  const {
+    data: apps,
+    isLoading,
+    error,
+  } = api.app.getAll.useQuery({
     userId: sessionData?.user.id ?? '',
   });
 
@@ -63,22 +68,34 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <ul className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {!apps || apps?.length > 0 ? (
-          apps?.map((app, idx) => (
-            <li key={idx}>
-              <AppCard
-                name={app.name}
-                createdAt={app.createdAt}
-                totalSubscribers={app._count.subscriber}
-                totalMails={app._count.mails}
-              />
-            </li>
-          ))
-        ) : (
-          <p className="text-center text-foreground">No app created yet.</p>
-        )}
-      </ul>
+      {isLoading && (
+        <div className="flex items-center justify-center">
+          <Loader />
+        </div>
+      )}
+
+      {!isLoading && error && (
+        <p className="text-center text-red-500">No app created yet.</p>
+      )}
+
+      {!isLoading && !error && (
+        <ul className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {!apps || apps?.length > 0 ? (
+            apps?.map((app, idx) => (
+              <li key={idx}>
+                <AppCard
+                  name={app.name}
+                  createdAt={app.createdAt}
+                  totalSubscribers={app._count.subscriber}
+                  totalMails={app._count.mails}
+                />
+              </li>
+            ))
+          ) : (
+            <p className="text-center text-foreground">No app created yet.</p>
+          )}
+        </ul>
+      )}
     </MainLayout>
   );
 }

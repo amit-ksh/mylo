@@ -14,6 +14,7 @@ import { api } from '@/utils/api';
 import { isObjectEmpty } from '@/lib/utils';
 import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import { GConnectButton } from '@/components/ConnectButton';
+import Loader from '../Loader';
 
 export function MailPanel({
   appId,
@@ -52,7 +53,11 @@ export function MailPanel({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading && 'Loading...'}
+          {isLoading && (
+            <div className="flex items-center justify-center">
+              <Loader />
+            </div>
+          )}
           {!isLoading && isObjectEmpty(mailBatch!) && '0 mails sent'}
           {!isLoading &&
             !isObjectEmpty(mailBatch!) &&

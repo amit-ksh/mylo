@@ -16,10 +16,11 @@ import { isAutheticated } from '@/lib/protected';
 import { signOut, useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
 import { useState } from 'react';
+import Loader from '@/components/Loader';
 
 export default function Setting() {
   const { data: sessionData } = useSession();
-  const { data: user } = api.user.get.useQuery({
+  const { data: user, isLoading } = api.user.get.useQuery({
     id: sessionData?.user.id ?? '',
   });
   const { mutate: deleteuser } = api.user.delete.useMutation();
@@ -38,59 +39,68 @@ export default function Setting() {
     updateuser({ id: user?.id, data: { name: name } });
   };
 
-  return (
-    <MainLayout>
-      <Card className="mx-auto my-4 max-w-5xl">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl">Setting</CardTitle>
-              <CardDescription>Your account details.</CardDescription>
+  if (isLoading)
+    return (
+      <MainLayout>
+        <div className="mt-8 flex items-center justify-center">
+          <Loader />
+        </div>
+      </MainLayout>
+    );
+  else
+    return (
+      <MainLayout>
+        <Card className="mx-auto my-4 max-w-5xl">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Setting</CardTitle>
+                <CardDescription>Your account details.</CardDescription>
+              </div>
+              <div>
+                <Button onClick={updateUser}>Save</Button>
+              </div>
             </div>
-            <div>
-              <Button onClick={updateUser}>Save</Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <InputField
-            id="name"
-            type="text"
-            label="Name"
-            className="disabled:opacity-1 font-semibold"
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
-          <InputField
-            id="createdAt"
-            type="data"
-            label="Created At"
-            className="disabled:opacity-1 font-semibold"
-            value={user?.createdAt.toUTCString()}
-            disabled
-          />
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <InputField
+              id="name"
+              type="text"
+              label="Name"
+              className="disabled:opacity-1 font-semibold"
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+            <InputField
+              id="createdAt"
+              type="data"
+              label="Created At"
+              className="disabled:opacity-1 font-semibold"
+              value={user?.createdAt.toUTCString()}
+              disabled
+            />
 
-          <InputField
-            id="email"
-            type="email"
-            label="Email"
-            value={user?.email ?? ''}
-            className="disabled:opacity-1 font-semibold"
-            disabled
-          />
-        </CardContent>
-        <CardFooter className="flex items-center justify-end">
-          <DangerModal
-            id="delete-user"
-            confirmationText={user?.email ?? ''}
-            onConfirm={deleteUser}
-          >
-            Delete Account
-          </DangerModal>
-        </CardFooter>
-      </Card>
-    </MainLayout>
-  );
+            <InputField
+              id="email"
+              type="email"
+              label="Email"
+              value={user?.email ?? ''}
+              className="disabled:opacity-1 font-semibold"
+              disabled
+            />
+          </CardContent>
+          <CardFooter className="flex items-center justify-end">
+            <DangerModal
+              id="delete-user"
+              confirmationText={user?.email ?? ''}
+              onConfirm={deleteUser}
+            >
+              Delete Account
+            </DangerModal>
+          </CardFooter>
+        </Card>
+      </MainLayout>
+    );
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {

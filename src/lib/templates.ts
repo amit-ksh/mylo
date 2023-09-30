@@ -1,5 +1,5 @@
 import type Message from 'nylas/lib/models/message';
-import { Draft, nylas } from './nylas';
+import { Draft, Nylas, nylas } from './nylas';
 
 export const createNewUserMail = (to: string, appName: string, url: string) => {
   return new Draft(nylas, {
@@ -22,8 +22,9 @@ export const sendMail = (
   appName: string,
   subject: string | undefined,
   body: string | undefined,
+  accessToken: string,
 ): Promise<Message> => {
-  const draft = new Draft(nylas, {
+  const draft = new Draft(Nylas.with(accessToken), {
     subject: subject,
     body: body,
     from: [{ email: from, name: appName }],

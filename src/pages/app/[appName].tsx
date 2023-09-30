@@ -10,7 +10,7 @@ import { api } from '@/utils/api';
 import { useSession } from 'next-auth/react';
 
 import { MailPanel, SettingPanel, StatisticsPanel } from '@/components/app';
-import { Icons } from '@/components/ui/icons';
+import Loader from '@/components/Loader';
 
 export default function AppPage() {
   const pathname = usePathname();
@@ -50,7 +50,11 @@ export default function AppPage() {
                     Error while loading app.
                   </p>
                 )}
-                {isLoading && <Icons.spinner className="h-10 w-10" />}
+                {isLoading && (
+                  <div className="flex items-center justify-center">
+                    <Loader />
+                  </div>
+                )}
               </div>
             )}
             {app && !isLoading && <SettingPanel app={app} />}

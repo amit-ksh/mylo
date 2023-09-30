@@ -29,7 +29,9 @@ export const mailRouter = createTRPCRouter({
         ctx.prisma.app.findUnique({ where: { id: input.appId } }),
       ]);
 
-      if (!app?.email)
+      if (!app) return new TRPCClientError('Bad Request: No App Found!');
+
+      if (!app?.email || !app?.accessToken)
         return new TRPCClientError(
           'No email is connected to your app. Please an email first.',
         );
@@ -55,6 +57,7 @@ export const mailRouter = createTRPCRouter({
           app.name,
           translatedMail[subscriber.language]?.subject,
           translatedMail[subscriber.language]?.content,
+          app.accessToken!,
         ).then(async message => {
           const sentMail = await ctx.prisma.mail.create({
             data: {
