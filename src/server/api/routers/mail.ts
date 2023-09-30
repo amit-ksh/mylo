@@ -86,7 +86,6 @@ export const mailRouter = createTRPCRouter({
           batchId: true,
           createdAt: true,
           language: true,
-          subject: true,
           mailId: true,
         },
         orderBy: {
@@ -104,7 +103,11 @@ export const mailRouter = createTRPCRouter({
             { ...batch, content: mail.body, subject: mail.subject! },
           ];
         } else {
-          response[batch.batchId]!.push({ ...batch, content: mail.body });
+          response[batch.batchId]!.push({
+            ...batch,
+            content: mail.body,
+            subject: mail.subject!,
+          });
         }
       }
 
