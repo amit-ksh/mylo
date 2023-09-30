@@ -151,7 +151,11 @@ export function SettingPanel({ app }: ISettingPanel) {
         <TokenField id="token" label="Token" value={app.token} />
       </CardContent>
       <CardFooter className="flex items-center justify-end">
-        <DangerModal confirmationText={app.name} onConfirm={deleteApp}>
+        <DangerModal
+          id="delete-app"
+          confirmationText={app.name}
+          onConfirm={deleteApp}
+        >
           Delete App
         </DangerModal>
       </CardFooter>

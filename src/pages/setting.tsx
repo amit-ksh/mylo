@@ -81,6 +81,7 @@ export default function Setting() {
         </CardContent>
         <CardFooter className="flex items-center justify-end">
           <DangerModal
+            id="delete-user"
             confirmationText={user?.email ?? ''}
             onConfirm={deleteUser}
           >
