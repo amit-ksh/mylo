@@ -53,7 +53,7 @@ export const appRouter = createTRPCRouter({
           .then(message => {
             console.log(`${message.id} was sent`);
           })
-          .catch(() => {
+          .catch(e => {
             throw new TRPCError({
               code: 'INTERNAL_SERVER_ERROR',
               message: 'Error while sending mails.',
