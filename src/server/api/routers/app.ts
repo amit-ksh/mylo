@@ -39,6 +39,7 @@ export const appRouter = createTRPCRouter({
             id: true,
             name: true,
             url: true,
+
             user: { select: { email: true } },
           },
         })
@@ -53,6 +54,9 @@ export const appRouter = createTRPCRouter({
             .send()
             .then(message => {
               console.log(`${message.id} was sent`);
+            })
+            .catch(e => {
+              console.log(e);
             });
 
           return { id: app.id, name: app.name };

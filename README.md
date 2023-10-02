@@ -35,7 +35,9 @@
           - http://localhost:3000/api/oauth/connect/
           - http://localhost:3000/api/auth/callback/google
    - Azure AI: [Guide](https://learn.microsoft.com/en-us/azure/ai-services/translator/translator-text-apis?tabs=nodejs)
-   - Nylas: [Guide](https://developer.nylas.com/docs/the-basics/quickstart/#step-2-run-the-sample-api-request)
+   - Nylas:
+     1. Quickstart: [Guide](https://developer.nylas.com/docs/the-basics/quickstart/#step-2-run-the-sample-api-request)
+     1. Now, go to `App Settings` and add the following http://localhost:3000/api/oauth/connect/ in the **Callback URI.**.
 
 1. Create the DB tables: `npx prisma migrate dev`
 

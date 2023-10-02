@@ -104,7 +104,7 @@ export default function CreateAppForm({ id }: { id: string }) {
                 <p className="text-sm text-black">
                   <span className="font-medium">URL: </span>
                   <span>{window.origin}/</span>
-                  <span>{form.getValues('url')}</span>
+                  <span className="font-medium">{form.getValues('url')}</span>
                   <span>/subscribe</span>
                 </p>
               </FormDescription>

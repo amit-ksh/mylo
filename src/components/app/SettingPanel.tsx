@@ -57,7 +57,7 @@ export function SettingPanel({ app, userId }: ISettingPanel) {
       void refetchUesrDetails();
       toast({
         title: 'App deleted!',
-        description: `App - ${name} deleted successfully.`,
+        description: `${name} app deleted successfully.`,
       });
     },
     onError: () => {
@@ -149,7 +149,9 @@ export function SettingPanel({ app, userId }: ISettingPanel) {
                   <FormDescription>
                     <p className="text-sm font-medium text-black">
                       <span>{window.origin}/</span>
-                      <span>{form.getValues('url')}</span>
+                      <span className="font-medium">
+                        {form.getValues('url')}
+                      </span>
                       <span>/subscribe</span>
                     </p>
                   </FormDescription>

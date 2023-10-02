@@ -6,7 +6,7 @@ export const createNewUserMail = (to: string, appName: string, url: string) => {
     to: [{ email: to }],
     subject: `Successfully created app: ${appName}`,
     body: `
-      You have successfully created app. Here the details of your app-
+      You have successfully created <i>${appName}</i> app. Here is the details of your app -
       
       <p>App Name: ${appName}</p>
       <p>Subscribe Url: <i>${url}/subscribe</i></p>
