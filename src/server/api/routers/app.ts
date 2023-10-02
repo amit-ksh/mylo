@@ -29,8 +29,8 @@ export const appRouter = createTRPCRouter({
           message: 'This url is already taken, please use different one.',
         });
 
-      return ctx.prisma.app
-        .create({
+      try {
+        const app = await ctx.prisma.app.create({
           data: {
             ...payload,
             token,
@@ -42,31 +42,32 @@ export const appRouter = createTRPCRouter({
 
             user: { select: { email: true } },
           },
-        })
-        .then(app => {
-          if (!app.user.email) return;
-
-          void createNewUserMail(
-            app.user.email,
-            app.name,
-            new URL(`${env.NEXTAUTH_URL}/${app.url}`).href,
-          )
-            .send()
-            .then(message => {
-              console.log(`${message.id} was sent`);
-            })
-            .catch(e => {
-              console.log(e);
-            });
-
-          return { id: app.id, name: app.name };
-        })
-        .catch(() => {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Server Error!',
-          });
         });
+
+        void createNewUserMail(
+          app.user.email,
+          app.name,
+          new URL(`${env.NEXTAUTH_URL}/${app.url}`).href,
+        )
+          .send()
+          .then(message => {
+            console.log(`${message.id} was sent`);
+          })
+          .catch(e => {
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Error while sending mails.',
+              cause: e,
+            });
+          });
+
+        return { id: app.id, name: app.name };
+      } catch {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Server Error!',
+        });
+      }
     }),
 
   update: publicProcedure
