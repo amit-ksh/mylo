@@ -1,6 +1,7 @@
 import Nylas from 'nylas';
 import { Region, regionConfig } from 'nylas/lib/config';
 import Draft from 'nylas/lib/models/draft';
+import Message from 'nylas/lib/models/message';
 
 import { env } from '@/env.mjs';
 
@@ -12,4 +13,4 @@ Nylas.config({
 
 const nylas = Nylas.with(env.NYLAS_ACCESS_TOKEN);
 
-export { nylas, Nylas, Draft };
+export { nylas, Nylas, Draft, Message };

@@ -11,9 +11,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       <div className="border-b">
         <div className="flex h-16 items-center justify-between px-4">
           <AppLogo />
-
+          j
           <MainNav className="mx-6" />
-
           <div className="flex items-center space-x-4">
             <Button className="" onClick={() => void signOut()}>
               Log Out

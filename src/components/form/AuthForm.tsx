@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
@@ -21,14 +21,9 @@ const providers = [
 interface IUserAuthForm {
   className?: Parameters<typeof cn>;
 }
-
+[];
 export function UserAuthForm({ className, ...props }: IUserAuthForm) {
-  const { data: sessionData } = useSession();
   const router = useRouter();
-
-  if (sessionData?.user) {
-    void router.push({ pathname: '/' });
-  }
 
   const signin = (provider: string) => {
     void signIn(provider);

@@ -15,18 +15,38 @@ import {
 import { isAutheticated } from '@/lib/protected';
 import { signOut, useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loader from '@/components/Loader';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function Setting() {
+  const { toast } = useToast();
+
   const { data: sessionData } = useSession();
   const { data: user, isLoading } = api.user.get.useQuery({
     id: sessionData?.user.id ?? '',
   });
   const { mutate: deleteuser } = api.user.delete.useMutation();
-  const { mutate: updateuser } = api.user.update.useMutation();
+  const { mutate: updateuser } = api.user.update.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Your account is updated successfully.',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Server Error! Try again later.',
+      });
+    },
+  });
 
-  const [name, setName] = useState(user?.name ?? '');
+  const [name, setName] = useState<string>(user?.name ?? 'John Doe');
+
+  useEffect(() => {
+    void setName(user?.name ?? '');
+  }, [user]);
 
   const deleteUser = () => {
     deleteuser({ id: sessionData?.user.id ?? '' });

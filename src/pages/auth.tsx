@@ -1,9 +1,9 @@
-'use client';
-
 import Link from 'next/link';
 
 import { UserAuthForm } from '@/components/form/AuthForm';
 import AppLogo from '@/components/AppLogo';
+import type { GetServerSidePropsContext } from 'next';
+import { getServerAuthSession } from '@/server/auth';
 
 export default function LoginPage() {
   return (
@@ -40,4 +40,23 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+
+  if (session?.user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
 }

@@ -23,14 +23,34 @@ import { api } from '@/utils/api';
 import { appCreateSchema } from '@/schemas/app';
 import { useSession } from 'next-auth/react';
 import ConnectButton from '../ConnectButton';
+import { useToast } from '../ui/use-toast';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
 
 export default function CreateAppForm({ id }: { id: string }) {
-  const { mutate: createApp, data: app } = api.app.create.useMutation();
+  const { toast } = useToast();
+
   const { data: sessionData } = useSession();
 
   const userId = sessionData?.user.id ?? '';
+
+  const { refetch: getApps } = api.app.getAll.useQuery({ userId });
+  const { mutate: createApp, data: app } = api.app.create.useMutation({
+    onSuccess: data => {
+      void getApps();
+      toast({
+        title: 'App Created!',
+        description: `${data?.name ?? ''} app created successfully!`,
+      });
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,6 +124,6 @@ export default function CreateAppForm({ id }: { id: string }) {
       </form>
     </Form>
   ) : (
-    <ConnectButton appId={app} />
+    <ConnectButton appId={app.id} />
   );
 }

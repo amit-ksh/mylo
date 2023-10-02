@@ -22,11 +22,32 @@ import { mailSchema } from '@/schemas/mail';
 import { useModal } from '@/hooks/useModal';
 import SelectLanguage from '../SelectLanguage';
 import { useSession } from 'next-auth/react';
+import { useToast } from '../ui/use-toast';
 
 const formSchema = mailSchema.omit({ mailId: true });
 
 export default function MailForm({ id, appId }: { id: string; appId: string }) {
-  const { mutate: sendMail } = api.mail.send.useMutation();
+  const { close } = useModal(id);
+  const { toast } = useToast();
+
+  const { refetch: getMails } = api.mail.getAll.useQuery({ appId });
+  const { mutate: sendMail } = api.mail.send.useMutation({
+    onSuccess: data => {
+      void getMails();
+      toast({
+        title: 'Mail Sent!',
+        description: `${data.totalMailSent} mails sent successfully! Check your inbox.`,
+      });
+      close();
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+    },
+  });
   const { data: languages } = api.translator.languages.useQuery();
   const { data: userSession } = useSession();
 
@@ -37,8 +58,6 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
   });
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const { close } = useModal(id);
-
   function onSubmit(
     values: z.infer<typeof formSchema>,
     e?: BaseSyntheticEvent,
@@ -47,8 +66,6 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
     if (!userSession?.user.email) return;
 
     sendMail({ ...values });
-
-    close();
   }
 
   return (

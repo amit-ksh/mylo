@@ -28,7 +28,7 @@ export const translatorRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const params =
         `?api-version=3.0&textType=html&from=${input.language}` +
-        input.languages.map(l => `&to=${l}`).join('');
+          input.languages.map(l => `&to=${l}`).join('') ?? '';
 
       const reqUrl = ENDPOINT + params;
 

@@ -30,6 +30,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { GConnectButton } from '@/components/ConnectButton';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
+import { useToast } from '../ui/use-toast';
 
 const formSchema = appCreateSchema.pick({ name: true, url: true });
 
@@ -46,8 +47,39 @@ interface ISettingPanel {
 }
 
 export function SettingPanel({ app }: ISettingPanel) {
-  const { mutate: deleteapp } = api.app.delete.useMutation();
-  const { mutate: saveapp } = api.app.update.useMutation();
+  const { toast } = useToast();
+
+  const { mutate: deleteapp } = api.app.delete.useMutation({
+    onSuccess: ({ name }) => {
+      toast({
+        title: 'App deleted!',
+        description: `App - ${name} deleted successfully.`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Server Error! Try again later.',
+        variant: 'destructive',
+      });
+    },
+  });
+  const { mutate: saveapp } = api.app.update.useMutation({
+    onSuccess: ({ name }) => {
+      toast({
+        title: 'App Details Updated!',
+        description: `App details (${name}) is updated successfully.`,
+      });
+      void router.push('/app/' + name);
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Server Error! Try again later.',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const router = useRouter();
 
@@ -65,8 +97,6 @@ export function SettingPanel({ app }: ISettingPanel) {
     e?.preventDefault();
 
     saveapp({ id: app.id, data: values });
-
-    void router.push('/app/' + values.name);
   }
 
   return (
@@ -80,7 +110,9 @@ export function SettingPanel({ app }: ISettingPanel) {
             </CardDescription>
           </div>
           <div>
-            <Button form="update-app-form">Save</Button>
+            <Button type="submit" form="update-app-form">
+              Save
+            </Button>
           </div>
         </div>
       </CardHeader>

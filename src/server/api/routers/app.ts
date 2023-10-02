@@ -19,6 +19,16 @@ export const appRouter = createTRPCRouter({
       };
       const token = jwt.sign(payload, env.JWT_SECRET);
 
+      const isUrlAlreadyTaken = await ctx.prisma.app.findUnique({
+        where: { url: input.url },
+      });
+
+      if (isUrlAlreadyTaken)
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'This url is already taken, please use different one.',
+        });
+
       return ctx.prisma.app
         .create({
           data: {
@@ -45,11 +55,9 @@ export const appRouter = createTRPCRouter({
               console.log(`${message.id} was sent`);
             });
 
-          return app.id;
+          return { id: app.id, name: app.name };
         })
-        .catch(e => {
-          console.log(e);
-
+        .catch(() => {
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'Server Error!',
@@ -82,6 +90,7 @@ export const appRouter = createTRPCRouter({
 
       return {
         id: app.id,
+        name: app.name,
       };
     }),
 

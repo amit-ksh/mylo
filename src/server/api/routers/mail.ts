@@ -1,11 +1,11 @@
 import * as z from 'zod';
-import type { MailBatch } from '@/types';
+import type { MailBatch, TranslationResponse } from '@/types';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
-import { nylas } from '@/lib/nylas';
+import { nylas, type Message } from '@/lib/nylas';
 import { tanslatorCaller } from './translator';
 import { sendMail } from '@/lib/templates';
-import { TRPCClientError } from '@trpc/client';
+import { TRPCError } from '@trpc/server';
 
 export const mailRouter = createTRPCRouter({
   send: publicProcedure
@@ -29,18 +29,27 @@ export const mailRouter = createTRPCRouter({
         ctx.prisma.app.findUnique({ where: { id: input.appId } }),
       ]);
 
-      if (!app) return new TRPCClientError('Bad Request: No App Found!');
+      if (!app)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'App not found!',
+        });
 
       if (!app?.email || !app?.accessToken)
-        return new TRPCClientError(
-          'No email is connected to your app. Please an email first.',
-        );
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'No email is connected to your app. Please an email first.',
+        });
 
-      const languages = new Set(subscribedLanguages.map(l => l.language));
-      const translatedMail = await tanslatorCaller.translate({
-        ...input,
-        languages: Array.from(languages),
-      });
+      let translatedMail: TranslationResponse = {};
+
+      if (subscribers.length) {
+        const languages = new Set(subscribedLanguages.map(l => l.language));
+        translatedMail = await tanslatorCaller.translate({
+          ...input,
+          languages: Array.from(languages),
+        });
+      }
 
       // For sending a copy to sender
       translatedMail[input.language] = {
@@ -50,6 +59,7 @@ export const mailRouter = createTRPCRouter({
       subscribers.push({ email: app.email, language: input.language });
       const batchId = crypto.randomUUID();
 
+      let totalMailSent = 0;
       subscribers.forEach(subscriber => {
         void sendMail(
           app.email!,
@@ -58,23 +68,31 @@ export const mailRouter = createTRPCRouter({
           translatedMail[subscriber.language]?.subject,
           translatedMail[subscriber.language]?.content,
           app.accessToken!,
-        ).then(async message => {
-          const sentMail = await ctx.prisma.mail.create({
-            data: {
-              language: subscriber.language,
-              batchId,
-              mailId: message.id ?? '',
-              appId: input.appId,
-            },
-          });
+        )
+          .then(async message => {
+            const sentMail = await ctx.prisma.mail.create({
+              data: {
+                language: subscriber.language,
+                batchId,
+                mailId: message.id ?? '',
+                appId: input.appId,
+              },
+            });
 
-          console.log(
-            `${sentMail.batchId} (${sentMail.language}) is sent successfully.`,
-          );
-        });
+            console.log(
+              `${sentMail.batchId} (${sentMail.language}) is sent successfully.`,
+            );
+            totalMailSent++;
+          })
+          .catch(() => {
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: `${totalMailSent} mails sent. Error while sending mails.`,
+            });
+          });
       });
 
-      return batchId;
+      return { batchId, totalMailSent };
     }),
 
   getAll: publicProcedure
@@ -96,7 +114,15 @@ export const mailRouter = createTRPCRouter({
       const response: Record<string, MailBatch[]> = {};
 
       for (const batch of batches) {
-        const mail = await nylas.messages.find(batch.mailId);
+        let mail: Message;
+        try {
+          mail = await nylas.messages.find(batch.mailId);
+        } catch (error) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'No able to retrive the mails.',
+          });
+        }
 
         if (!response.hasOwnProperty(batch.batchId)) {
           response[batch.batchId] = [

@@ -15,6 +15,8 @@ import { isObjectEmpty } from '@/lib/utils';
 import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import { GConnectButton } from '@/components/ConnectButton';
 import Loader from '../Loader';
+import { useToast } from '../ui/use-toast';
+import { useEffect } from 'react';
 
 export function MailPanel({
   appId,
@@ -23,7 +25,21 @@ export function MailPanel({
   appId: string;
   appEmail?: string | null;
 }) {
-  const { data: mailBatch, isLoading } = api.mail.getAll.useQuery({ appId });
+  const { toast } = useToast();
+  const {
+    data: mailBatch,
+    isLoading,
+    error,
+  } = api.mail.getAll.useQuery({ appId });
+
+  useEffect(() => {
+    if (!error) return;
+
+    toast({
+      title: 'Server Error',
+      description: error?.message,
+    });
+  }, [error, toast]);
 
   return (
     <div>
@@ -40,7 +56,19 @@ export function MailPanel({
         </div>
       </div>
       <Table className="my-2 min-w-[500px] overflow-x-auto">
-        <TableCaption>List of mails send by you.</TableCaption>
+        <TableCaption>
+          {isLoading && (
+            <div className="flex items-center justify-center">
+              <Loader />
+            </div>
+          )}
+          {!isLoading && isObjectEmpty(mailBatch!) && (
+            <span className="mb-2 block text-lg text-muted-foreground">
+              0 mails sent
+            </span>
+          )}
+          <span>List of mails send by you.</span>
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>S. No.</TableHead>
@@ -53,12 +81,6 @@ export function MailPanel({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading && (
-            <div className="flex items-center justify-center">
-              <Loader />
-            </div>
-          )}
-          {!isLoading && isObjectEmpty(mailBatch!) && '0 mails sent'}
           {!isLoading &&
             !isObjectEmpty(mailBatch!) &&
             Object.values(mailBatch!)?.map((mails, idx) => (
