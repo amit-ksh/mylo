@@ -22,6 +22,7 @@ import { appCreateSchema } from '@/schemas/app';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -44,13 +45,16 @@ interface ISettingPanel {
     token: string;
     url: string;
   };
+  userId: string;
 }
 
-export function SettingPanel({ app }: ISettingPanel) {
+export function SettingPanel({ app, userId }: ISettingPanel) {
   const { toast } = useToast();
 
+  const { refetch: refetchUesrDetails } = api.app.getAll.useQuery({ userId });
   const { mutate: deleteapp } = api.app.delete.useMutation({
     onSuccess: ({ name }) => {
+      void refetchUesrDetails();
       toast({
         title: 'App deleted!',
         description: `App - ${name} deleted successfully.`,
@@ -142,20 +146,21 @@ export function SettingPanel({ app }: ISettingPanel) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL</FormLabel>
+                  <FormDescription>
+                    <p className="text-sm font-medium text-black">
+                      <span>{window.origin}/</span>
+                      <span>{form.getValues('url')}</span>
+                      <span>/subscribe</span>
+                    </p>
+                  </FormDescription>
                   <FormControl>
                     <div className="flex items-center">
-                      <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                        {window.origin}/
-                      </div>
                       <Input
                         type="text"
                         placeholder="my-newsletter"
                         required
                         {...field}
                       />
-                      <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                        /subscribe
-                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />

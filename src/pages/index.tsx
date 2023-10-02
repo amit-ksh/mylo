@@ -54,14 +54,9 @@ export default function HomePage() {
     data: apps,
     isLoading,
     error,
-    refetch: refetchApps,
   } = api.app.getAll.useQuery({
     userId: sessionData?.user.id ?? '',
   });
-
-  useEffect(() => {
-    void refetchApps();
-  }, [refetchApps]);
 
   return (
     <MainLayout>

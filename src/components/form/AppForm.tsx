@@ -35,7 +35,11 @@ export default function CreateAppForm({ id }: { id: string }) {
   const userId = sessionData?.user.id ?? '';
 
   const { refetch: getApps } = api.app.getAll.useQuery({ userId });
-  const { mutate: createApp, data: app } = api.app.create.useMutation({
+  const {
+    mutate: createApp,
+    data: app,
+    isLoading,
+  } = api.app.create.useMutation({
     onSuccess: data => {
       void getApps();
       toast({
@@ -97,28 +101,28 @@ export default function CreateAppForm({ id }: { id: string }) {
               <FormLabel>URL</FormLabel>
               <FormDescription>
                 Enter a url for subscriber to subscribe.
+                <p className="text-sm text-black">
+                  <span className="font-medium">URL: </span>
+                  <span>{window.origin}/</span>
+                  <span>{form.getValues('url')}</span>
+                  <span>/subscribe</span>
+                </p>
               </FormDescription>
               <FormControl>
                 <div className="flex items-center">
-                  <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                    {window.origin}/
-                  </div>
                   <Input
                     type="text"
                     placeholder="my-newsletter"
                     required
                     {...field}
                   />
-                  <div className="h-9 rounded-md border border-input bg-gray-300 px-3 py-1 text-sm font-medium">
-                    /subscribe
-                  </div>
                 </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" form="app-form">
+        <Button type="submit" form="app-form" disabled={isLoading}>
           Create
         </Button>
       </form>

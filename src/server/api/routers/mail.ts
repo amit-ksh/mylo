@@ -74,7 +74,7 @@ export const mailRouter = createTRPCRouter({
               data: {
                 language: subscriber.language,
                 batchId,
-                mailId: message.id ?? '',
+                mailId: message.id!,
                 appId: input.appId,
               },
             });
@@ -82,7 +82,6 @@ export const mailRouter = createTRPCRouter({
             console.log(
               `${sentMail.batchId} (${sentMail.language}) is sent successfully.`,
             );
-            totalMailSent++;
           })
           .catch(() => {
             throw new TRPCError({
@@ -90,6 +89,7 @@ export const mailRouter = createTRPCRouter({
               message: `${totalMailSent} mails sent. Error while sending mails.`,
             });
           });
+        totalMailSent++;
       });
 
       return { batchId, totalMailSent };

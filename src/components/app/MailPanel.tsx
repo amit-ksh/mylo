@@ -30,7 +30,7 @@ export function MailPanel({
     data: mailBatch,
     isLoading,
     error,
-  } = api.mail.getAll.useQuery({ appId });
+  } = api.mail.getAll.useQuery({ appId }, { retry: false });
 
   useEffect(() => {
     if (!error) return;

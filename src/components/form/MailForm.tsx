@@ -31,7 +31,7 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
   const { toast } = useToast();
 
   const { refetch: getMails } = api.mail.getAll.useQuery({ appId });
-  const { mutate: sendMail } = api.mail.send.useMutation({
+  const { mutate: sendMail, isLoading } = api.mail.send.useMutation({
     onSuccess: data => {
       void getMails();
       toast({
@@ -147,7 +147,7 @@ export default function MailForm({ id, appId }: { id: string; appId: string }) {
             </div>
           )}
         </div>
-        <Button type="submit" form="mail-form">
+        <Button type="submit" form="mail-form" disabled={isLoading}>
           Send
         </Button>
       </form>

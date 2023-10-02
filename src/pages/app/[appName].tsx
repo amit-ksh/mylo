@@ -57,7 +57,9 @@ export default function AppPage() {
                 )}
               </div>
             )}
-            {app && !isLoading && <SettingPanel app={app} />}
+            {app && !isLoading && (
+              <SettingPanel app={app} userId={sessionData?.user.id ?? ''} />
+            )}
           </TabsContent>
         </Tabs>
       </div>
