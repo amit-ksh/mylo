@@ -1,8 +1,9 @@
 import type Message from 'nylas/lib/models/message';
-import { Draft, Nylas, nylas } from './nylas';
+import { Draft, Nylas } from './nylas';
+import { env } from '@/env.mjs';
 
 export const createNewUserMail = (to: string, appName: string, url: string) => {
-  return new Draft(nylas, {
+  return new Draft(Nylas.with(env.NYLAS_ACCESS_TOKEN), {
     to: [{ email: to }],
     subject: `Successfully created app: ${appName}`,
     body: `

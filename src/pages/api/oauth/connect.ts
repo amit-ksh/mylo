@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Draft, Nylas, nylas } from '@/lib/nylas';
+import { Draft, Nylas } from '@/lib/nylas';
 import { appCaller } from '@/server/api/routers/app';
+import { env } from '@/env.mjs';
 
 export default async function authorize(
   req: NextApiRequest,
@@ -25,6 +26,8 @@ export default async function authorize(
         accessToken,
       },
     });
+
+    const nylas = Nylas.with(env.NYLAS_ACCESS_TOKEN);
 
     const draft = new Draft(nylas, {
       subject: `${app.name} app successfully connected to your email address`,

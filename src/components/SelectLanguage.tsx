@@ -27,9 +27,9 @@ export default function SelectLanguage({
       <SelectContent className="max-h-[300px] overflow-y-auto">
         <SelectGroup>
           {Object.keys(languages).map(lang => (
-            <SelectItem key={lang} value={lang} className="capitalize">
+            <SelectItem key={lang} value={lang}>
               <span>{languages[lang]!.name} </span>(
-              <span>{languages[lang]!.nativeName}</span>)
+              <span className="capitalize">{languages[lang]!.nativeName}</span>)
             </SelectItem>
           ))}
         </SelectGroup>

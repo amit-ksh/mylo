@@ -2,7 +2,7 @@ import * as z from 'zod';
 import type { MailBatch, TranslationResponse } from '@/types';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { mailSchema } from '@/schemas/mail';
-import { nylas, type Message } from '@/lib/nylas';
+import { Nylas, type Message } from '@/lib/nylas';
 import { tanslatorCaller } from './translator';
 import { sendMail } from '@/lib/templates';
 import { TRPCError } from '@trpc/server';
@@ -105,13 +105,26 @@ export const mailRouter = createTRPCRouter({
           createdAt: true,
           language: true,
           mailId: true,
+          app: {
+            select: {
+              accessToken: true,
+            },
+          },
         },
         orderBy: {
           createdAt: 'desc',
         },
       });
 
+      if (batches.length <= 0)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'No mail found.',
+        });
+
       const response: Record<string, MailBatch[]> = {};
+
+      const nylas = Nylas.with(batches[0]!.app.accessToken!);
 
       for (const batch of batches) {
         let mail: Message;

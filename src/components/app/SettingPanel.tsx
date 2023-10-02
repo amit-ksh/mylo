@@ -146,14 +146,10 @@ export function SettingPanel({ app, userId }: ISettingPanel) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL</FormLabel>
-                  <FormDescription>
-                    <p className="text-sm font-medium text-black">
-                      <span>{window.origin}/</span>
-                      <span className="font-medium">
-                        {form.getValues('url')}
-                      </span>
-                      <span>/subscribe</span>
-                    </p>
+                  <FormDescription className="text-sm font-medium text-black">
+                    <span>{window.origin}/</span>
+                    <span className="font-medium">{form.getValues('url')}</span>
+                    <span>/subscribe</span>
                   </FormDescription>
                   <FormControl>
                     <div className="flex items-center">

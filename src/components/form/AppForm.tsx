@@ -100,13 +100,13 @@ export default function CreateAppForm({ id }: { id: string }) {
             <FormItem>
               <FormLabel>URL</FormLabel>
               <FormDescription>
-                Enter a url for subscriber to subscribe.
-                <p className="text-sm text-black">
+                <span>Enter a url for subscriber to subscribe.</span>
+                <span className="text-sm text-black">
                   <span className="font-medium">URL: </span>
                   <span>{window.origin}/</span>
                   <span className="font-medium">{form.getValues('url')}</span>
                   <span>/subscribe</span>
-                </p>
+                </span>
               </FormDescription>
               <FormControl>
                 <div className="flex items-center">

@@ -11,6 +11,4 @@ Nylas.config({
   apiServer: regionConfig[Region.Us].nylasAPIUrl,
 });
 
-const nylas = Nylas.with(env.NYLAS_ACCESS_TOKEN);
-
-export { nylas, Nylas, Draft, Message };
+export { Nylas, Draft, Message };
