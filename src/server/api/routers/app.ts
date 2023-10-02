@@ -53,7 +53,7 @@ export const appRouter = createTRPCRouter({
           .then(message => {
             console.log(`${message.id} was sent`);
           })
-          .catch(e => {
+          .catch(() => {
             throw new TRPCError({
               code: 'INTERNAL_SERVER_ERROR',
               message: 'Error while sending mails.',
@@ -62,10 +62,11 @@ export const appRouter = createTRPCRouter({
           });
 
         return { id: app.id, name: app.name };
-      } catch {
+      } catch (e) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Server Error!',
+          cause: e,
         });
       }
     }),
