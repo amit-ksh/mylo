@@ -9,7 +9,6 @@ import { isAutheticated } from '@/lib/protected';
 import { useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
 import Loader from '@/components/Loader';
-import { useEffect } from 'react';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
