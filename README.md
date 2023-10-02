@@ -20,7 +20,6 @@
    ```bash
    git clone https://github.com/amit-ksh/mylo.git
    cd mylo
-   npm install
    ```
 
 1. Rename the `.env.example` to `.env` and fill up all the variables
@@ -39,7 +38,12 @@
      1. Quickstart: [Guide](https://developer.nylas.com/docs/the-basics/quickstart/#step-2-run-the-sample-api-request)
      1. Now, go to `App Settings` and add the following http://localhost:3000/api/oauth/connect/ in the **Callback URI.**.
 
-1. Create the DB tables: `npx prisma migrate dev`
+1. Installing dependencies and creating DB tables:
+   ```base
+   npm install (this will both install dependencies and create tables)
+   or
+   npx prisma migrate dev [If tables are not created, run this]
+   ```
 
 1. Run the development server:
 
