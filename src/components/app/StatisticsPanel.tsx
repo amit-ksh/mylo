@@ -81,7 +81,7 @@ export function StatisticsPanel({ appId }: { appId: string }) {
                 Unsubscribe URL
               </TableCell>
               <TableCell>
-                <Link url={`${window.origin}/${app?.name}/unsubscribe`} />
+                <Link url={`${window.origin}/${app?.url}/unsubscribe`} />
               </TableCell>
             </TableRow>
             <TableRow>
