@@ -38,7 +38,9 @@ export function GConnectButton({ appId }: { appId: string }) {
   const router = useRouter();
 
   const onConnect = async () => {
-    const resp = await fetch(`/api/oauth/authorize/?appId=${appId}`);
+    const resp = await fetch(
+      `${window.origin}/api/oauth/authorize/?appId=${appId}`,
+    );
     const { url } = await resp.json();
 
     void router.push(url);
