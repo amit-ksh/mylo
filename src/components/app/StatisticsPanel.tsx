@@ -73,7 +73,7 @@ export function StatisticsPanel({ appId }: { appId: string }) {
                 Subscribe URL
               </TableCell>
               <TableCell>
-                <Link url={`${window.origin}/${app?.name}/subscribe`} />
+                <Link url={`${window.origin}/${app?.url}/subscribe`} />
               </TableCell>
             </TableRow>
             <TableRow>

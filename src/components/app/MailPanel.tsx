@@ -36,7 +36,7 @@ export function MailPanel({
     if (!error) return;
 
     toast({
-      title: 'Server Error',
+      title: 'Error',
       description: error?.message,
     });
   }, [error, toast]);
